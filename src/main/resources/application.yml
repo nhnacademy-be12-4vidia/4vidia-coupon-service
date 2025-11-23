@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: 4vidia-coupon-service
+
+server:
+  port: 8080
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${ADMIN_ID}:${ADMIN_PASSWORD}@4vidia-discovery-1:8080/eureka/
