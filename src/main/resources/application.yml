@@ -4,7 +4,6 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://s4.java21.net:13306/project_be12_team4
-
     username: project_be12_team4
     password: Qrs8WavVsmxaQd[O
 

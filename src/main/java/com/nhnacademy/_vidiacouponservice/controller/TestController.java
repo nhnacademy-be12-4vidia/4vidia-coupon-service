@@ -1,5 +1,6 @@
 package com.nhnacademy._vidiacouponservice.controller;
 
+import com.nhnacademy._vidiacouponservice.dto.TestResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -7,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestController {
 
     @GetMapping("/test")
-    public String getTestString() {
-        return "ㅎㅇ?";
+    public TestResponse getTestString() {
+        return new TestResponse("ㅎㅇ?");
     }
 }
