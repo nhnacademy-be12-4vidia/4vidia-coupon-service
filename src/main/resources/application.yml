@@ -1,6 +1,28 @@
 spring:
   application:
     name: 4vidia-coupon-service
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://s4.java21.net:13306/project_be12_team4
+
+    username: project_be12_team4
+    password: Qrs8WavVsmxaQd[O
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    show-sql: true
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 100
+          order_inserts: true
+          order_updates: true
+
+
+        dialect: org.hibernate.dialect.MySQL8Dialect
 
 server:
   port: 8080
