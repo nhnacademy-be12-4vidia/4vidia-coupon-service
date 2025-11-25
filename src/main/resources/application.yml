@@ -19,9 +19,23 @@ spring:
           batch_size: 100
           order_inserts: true
           order_updates: true
-
-
         dialect: org.hibernate.dialect.MySQL8Dialect
+
+  data:
+    redis:
+      host: s4.java21.net
+      port: 6379
+      password: "*N2vya7H@muDTwdNMR!"
+      database: 380
+
+  rabbitmq:
+    host: s4.java21.net
+    port: 5672
+    username: admin
+    password: nhnacademy123!
+    listener:
+      simple:
+        default-deserialization-allowed-patterns: "com.dooray.coupon.**,java.util.**"
 
 server:
   port: 8080
