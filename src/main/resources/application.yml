@@ -44,8 +44,3 @@ eureka:
   client:
     service-url:
       defaultZone: http://${ADMIN_ID}:${ADMIN_PASSWORD}@4vidia-discovery-1:8080/eureka/
-  instance:
-    prefer-ip-address: true
-    # 컨테이너 이름과 같아야한다.
-    hostname: 4vidia-coupon-service-1
-    instance-id: 4vidia-coupon-service-test
