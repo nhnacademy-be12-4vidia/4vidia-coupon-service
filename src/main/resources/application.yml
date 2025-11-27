@@ -46,3 +46,5 @@ eureka:
       defaultZone: http://${ADMIN_ID}:${ADMIN_PASSWORD}@4vidia-discovery-1:8080/eureka/
   instance:
     prefer-ip-address: true
+    hostname: 4vidia-coupon-service-test
+    instance-id: instance-id
