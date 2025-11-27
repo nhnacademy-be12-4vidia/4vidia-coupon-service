@@ -9,7 +9,8 @@ import com.nhnacademy._vidiacouponservice.domain.converter.DiscountTargetTypeCon
 import com.nhnacademy._vidiacouponservice.domain.converter.DiscountTypeConverter;
 import com.nhnacademy._vidiacouponservice.domain.converter.PolicyTypeConverter;
 import com.nhnacademy._vidiacouponservice.domain.converter.ValidityTypeConverter;
-import com.nhnacademy._vidiacouponservice.domain.dto.CouponPolicyUpdaterequest;
+import com.nhnacademy._vidiacouponservice.domain.dto.CouponPolicyCreateRequest;
+import com.nhnacademy._vidiacouponservice.domain.dto.CouponPolicyUpdateRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -56,9 +57,11 @@ public class CouponPolicy {
     private ValidityType validityType;
 
     @Column(name = "valid_days")
-    private Integer valid_days;
+    private Integer validDays;
 
+    @Column(name = "start_date")
     private LocalDateTime startDate;
+    @Column(name = "end_date")
     private LocalDateTime endDate;
 
     /**
@@ -84,14 +87,39 @@ public class CouponPolicy {
     private Integer maxDiscountAmount;
 
     /**
-     * 기본은 0
+     * 기본은 1
      */
     @Column(name = "is_activation",  nullable = false)
     private Boolean isActivation;
 
 
     //service용
-    public void update(CouponPolicyUpdaterequest dto){
+    public static CouponPolicy create(CouponPolicyCreateRequest dto) {
+        CouponPolicy p = new CouponPolicy();
+
+        p.policyName = dto.policyName();
+        p.policyType = dto.policyType();
+        p.discountType = dto.discountType();
+        p.discountValue = dto.discountValue();
+        p.discountTargetType = dto.discountTargetType();
+        p.categoryId = dto.categoryId();
+        p.bookId = dto.bookId();
+        p.validityType = dto.validityType();
+        p.validDays = dto.validDays();
+        p.startDate = dto.startDate();
+        p.endDate = dto.endDate();
+        p.limitedQuantity = dto.limitedQuantity();
+        p.minOrderAmount = dto.minOrderAmount();
+        p.maxDiscountAmount = dto.maxDiscountAmount();
+        p.issuedQuantity = 0;
+        p.isActivation = dto.isActivation() != null ? dto.isActivation() : true;
+
+        return p;
+    }
+
+
+    //service용
+    public void update(CouponPolicyUpdateRequest dto){
         this.policyName = dto.policyName();
         this.policyType = dto.policyType();
         this.discountType = dto.discountType();
@@ -100,7 +128,7 @@ public class CouponPolicy {
         this.categoryId = dto.categoryId();
         this.bookId = dto.bookId();
         this.validityType = dto.validityType();
-        this.valid_days = dto.validDays();
+        this.validDays = dto.validDays();
         this.startDate = dto.startDate();
         this.endDate = dto.endDate();
         this.limitedQuantity = dto.limitedQuantity();

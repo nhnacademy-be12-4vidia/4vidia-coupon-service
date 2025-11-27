@@ -1,6 +1,3 @@
-show tables;
-
-
 
 -- 1. 쿠폰_정책 테이블
 CREATE TABLE coupon_policy (

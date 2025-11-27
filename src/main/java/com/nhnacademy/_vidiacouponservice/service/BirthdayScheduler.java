@@ -1,4 +1,4 @@
-package com.nhnacademy._vidiacouponservice.service;//package com.dooray.coupon.service;
+//package com.nhnacademy._vidiacouponservice.service;
 //
 //import lombok.RequiredArgsConstructor;
 //import org.springframework.scheduling.annotation.Scheduled;

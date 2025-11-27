@@ -6,42 +6,44 @@ import org.springframework.amqp.core.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+
 @Configuration
 public class RabbitMQConfig {
 
-    public static final String QUEUE = "coupon.issue.queue";
-    public static final String EXCHANGE = "coupon.issue.exchange";
-    public static final String ROUTING_KEY = "coupon.issue";
+    public static final String EXCHANGE = "coupon4.exchange";
+
+    public static final String ISSUE_QUEUE = "coupon4.issue.queue";
+    public static final String STOCK_QUEUE = "coupon4.stock.queue";
 
 
-    /**
-     *
-     * @return MQ재시작해도 큐가 유지되게 true
-     */
     @Bean
-    public Queue couponQueue() {
-        return new Queue(QUEUE, true);
+    public TopicExchange couponExchange() {
+        return new TopicExchange(EXCHANGE);
     }
 
-    /**
-     * 익스체인지 타입이 4개정도있는데 얘가 라우팅키를 패텅 매칭함
-     * 나중에 welcome이랑 birthday도 구현해야해서 얘를 쓰는게 유연함
-     */
-//    @Bean
-//    public TopicExchange couponExchange() {
-//        return new TopicExchange(EXCHANGE);
-//    }
     @Bean
-    public DirectExchange couponExchange() {
-        return new DirectExchange(EXCHANGE);
+    public Queue issueQueue() {
+        return new Queue(ISSUE_QUEUE, true);
     }
-    /**
-     * exchange->라우팅키(issue)를 써서 들어온 메시지->queue로 슛
-     */
+
     @Bean
-    public Binding couponBinding() {
-        return BindingBuilder.bind(couponQueue())
+    public Queue stockQueue() {
+        return new Queue(STOCK_QUEUE, true);
+    }
+
+    @Bean
+    public Binding issueBinding() {
+        return BindingBuilder
+                .bind(issueQueue())
                 .to(couponExchange())
-                .with(ROUTING_KEY);
+                .with("coupon4.issue.#");
+    }
+
+    @Bean
+    public Binding stockBinding() {
+        return BindingBuilder
+                .bind(stockQueue())
+                .to(couponExchange())
+                .with("coupon4.stock.#");
     }
 }

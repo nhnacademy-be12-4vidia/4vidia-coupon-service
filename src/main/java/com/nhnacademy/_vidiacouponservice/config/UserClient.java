@@ -1,5 +1,6 @@
-package com.nhnacademy._vidiacouponservice.config;//package com.dooray.coupon.config;
+//package com.nhnacademy._vidiacouponservice.config;
 //
+//import com.nhnacademy._vidiacouponservice.domain.dto.BirthdayResponse;
 //import org.springframework.cloud.openfeign.FeignClient;
 //import org.springframework.context.annotation.Configuration;
 //import org.springframework.stereotype.Component;

@@ -184,14 +184,14 @@
                                             <input type="number" id="validDays" class="form-control">
                                         </div>
 
-                                        <div class="form-group col-md-4 hidden" id="startAtGroup">
+                                        <div class="form-group col-md-4 hidden" id="startDateGroup">
                                             <label>시작일시</label>
-                                            <input type="datetime-local" id="startAt" class="form-control">
+                                            <input type="datetime-local" id="startDate" class="form-control">
                                         </div>
 
-                                        <div class="form-group col-md-4 hidden" id="endAtGroup">
+                                        <div class="form-group col-md-4 hidden" id="endDateGroup">
                                             <label>종료일시</label>
-                                            <input type="datetime-local" id="endAt" class="form-control">
+                                            <input type="datetime-local" id="endDate" class="form-control">
                                         </div>
                                     </div>
 
@@ -292,18 +292,18 @@
     // 유효기간 타입 토글
     const validityType = document.getElementById("validityType");
     const validDaysGroup = document.getElementById("validDaysGroup");
-    const startAtGroup = document.getElementById("startAtGroup");
-    const endAtGroup = document.getElementById("endAtGroup");
+    const startDateGroup = document.getElementById("startDateGroup");
+    const endDateGroup = document.getElementById("endDateGroup");
 
     function toggleValidity() {
         if (validityType.value === "RELATIVE") {
             validDaysGroup.classList.remove("hidden");
-            startAtGroup.classList.add("hidden");
-            endAtGroup.classList.add("hidden");
+            startDateGroup.classList.add("hidden");
+            endDateGroup.classList.add("hidden");
         } else {
             validDaysGroup.classList.add("hidden");
-            startAtGroup.classList.remove("hidden");
-            endAtGroup.classList.remove("hidden");
+            startDateGroup.classList.remove("hidden");
+            endDateGroup.classList.remove("hidden");
         }
     }
     validityType.addEventListener("change", toggleValidity);
@@ -329,10 +329,10 @@
             bookId: toIntOrNull(document.getElementById("bookId").value),
 
             validityType: document.getElementById("validityType").value,
-            valid_days: toIntOrNull(document.getElementById("validDays").value),
+            validDays: toIntOrNull(document.getElementById("validDays").value),
 
-            startAt: document.getElementById("startAt").value || null,
-            endAt: document.getElementById("endAt").value || null,
+            startDate: document.getElementById("startDate").value || null,
+            endDate: document.getElementById("endDate").value || null,
 
             limitedQuantity: toIntOrNull(document.getElementById("limitedQuantity").value),
             minOrderAmount: toIntOrNull(document.getElementById("minOrderAmount").value),
@@ -344,7 +344,7 @@
         const result = document.getElementById("policyResult");
 
         try {
-            const res = await fetch("/policy", {
+            const res = await fetch("/policies", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
