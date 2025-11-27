@@ -47,4 +47,4 @@ eureka:
   instance:
     prefer-ip-address: true
     hostname: 4vidia-coupon-service-test
-    instance-id: instance-id
+    instance-id: 4vidia-coupon-service-test
