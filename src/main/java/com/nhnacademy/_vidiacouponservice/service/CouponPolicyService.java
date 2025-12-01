@@ -8,6 +8,7 @@ import com.nhnacademy._vidiacouponservice.domain.dto.CouponPolicyUpdateRequest;
 import com.nhnacademy._vidiacouponservice.exception.PolicyNotFoundException;
 import com.nhnacademy._vidiacouponservice.repository.CouponPolicyRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,10 +18,21 @@ import org.springframework.transaction.annotation.Transactional;
 public class CouponPolicyService {
 
     private final CouponPolicyRepository couponPolicyRepository;
+    private final RedisTemplate<String, String> redisTemplate;
 
     public CouponPolicy createPolicy(CouponPolicyCreateRequest dto) {
-        return couponPolicyRepository.save(CouponPolicy.create(dto));
+        CouponPolicy policy = CouponPolicy.create(dto);
+        CouponPolicy saved = couponPolicyRepository.save(policy);
+
+        // ✔ 재고 초기화
+        if (saved.getLimitedQuantity() != null) {
+            String stockKey = "coupon:policy:" + saved.getPolicyId() + ":stock";
+            redisTemplate.opsForValue().set(stockKey, String.valueOf(saved.getLimitedQuantity()));
+        }
+
+        return saved;
     }
+
 
 
     public CouponPolicy updatePolicy(Long id, CouponPolicyUpdateRequest dto) {

@@ -22,12 +22,9 @@ import java.time.LocalDateTime;
 /**
  * MQ에서 메시지 하나씩 소비함
  * 얘가 진짜 쿠폰을 DB에 저장
- */
-/**
  * 쿠폰 발급 이벤트를 처리하는 Consumer.
  * topic: coupon.issue.# 에 묶인 큐에서 메시지를 소비한다.
  */
-
 
 
 @Component
@@ -40,9 +37,16 @@ public class CouponIssueConsumer {
 
     /**
      * 쿠폰생성+UserCoupon생성+정책 발급량 증가
+     * 큐에서 메시지 하나씩 꺼내서 DB 저장
+     * 선착순쿠폰만 해당하는거임
+     * 1: 정책조회
+     * 2: 쿠폰엔티티 생성
+     * 3: UserCoupon 생성
+     * 4: 정책 issuedQuantity(쿠폰발행수) 증가
+     * 234중에 하나라도 실패하면 쿠폰은 생성될수가 없음
      */
     @RabbitListener(queues = RabbitMQConfig.ISSUE_QUEUE)
-    @Transactional
+    @Transactional // <- 얘는 왜썼냐 : rollback이 필요해서씀
     public void onMessage(CouponIssueMessage msg) {
 
         CouponPolicy policy = policyRepo.findById(msg.policyId())
