@@ -35,7 +35,7 @@ spring:
     password: nhnacademy123!
     listener:
       simple:
-        default-deserialization-allowed-patterns: "com.dooray.coupon.**,java.util.**"
+        default-deserialization-allowed-patterns: "com.nhnacademy._vidiacouponservice.**,java.util.**"
 
 server:
   port: 8080

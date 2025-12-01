@@ -27,9 +27,9 @@ public class CouponPolicyService {
 
         // 🔥 Redis Hash로 저장
         String key = RedisKeys.policyHash(saved.getPolicyId());
-        redisTemplate.opsForHash().put(key, "stock", saved.getLimitedQuantity());
-        redisTemplate.opsForHash().put(key, "issued", 0);
-        redisTemplate.opsForHash().put(key, "maxDiscountAmount", saved.getMaxDiscountAmount());
+        redisTemplate.opsForHash().put(key, "stock", String.valueOf(saved.getLimitedQuantity()));
+        redisTemplate.opsForHash().put(key, "issued", String.valueOf(0));
+        redisTemplate.opsForHash().put(key, "maxDiscountAmount", String.valueOf(saved.getMaxDiscountAmount()));
 
         return saved;
     }

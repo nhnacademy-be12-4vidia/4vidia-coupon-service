@@ -1,4 +1,5 @@
 
+
 -- 1. 쿠폰_정책 테이블
 CREATE TABLE coupon_policy (
                                coupon_policy_id   BIGINT       NOT NULL AUTO_INCREMENT COMMENT '쿠폰정책ID',

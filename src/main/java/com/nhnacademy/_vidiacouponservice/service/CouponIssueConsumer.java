@@ -58,27 +58,36 @@ public class CouponIssueConsumer {
             CouponPolicy policy = policyRepo.findById(msg.policyId())
                     .orElseThrow(() -> new PolicyInactiveException(msg.policyId()));
 
+            //쿠폰생성
             Coupon coupon = new Coupon();
             coupon.setCouponPolicy(policy);
             coupon.setIssuedAt(LocalDateTime.now());
             coupon.setExpireAt(calcExpire(policy));
             coupon.setStatus(CouponStatus.UNUSED);
-
             couponRepo.save(coupon);
 
-            userCouponRepo.save(new UserCoupon(msg.userId(), coupon));  // 🔥 여기서 중복으로 실패 가능
+            // user_coupon생성
+            userCouponRepo.save(new UserCoupon(msg.userId(), coupon));  // 여기서 중복으로 실패 가능
 
+            // 4) 정책 발급량 증가(DB)
             policy.setIssuedQuantity(policy.getIssuedQuantity() + 1);
+            policyRepo.save(policy);
 
+            // 5) Redis issued 증가
+            redisTemplate.opsForHash().increment(
+                    RedisKeys.policyHash(msg.policyId()),
+                    "issued",
+                    1
+            );
         } catch (DataIntegrityViolationException e) {
-
+            // user_coupon UNIQUE 중복 시 → Redis 재고 복구
             redisTemplate.opsForHash().increment(
                     RedisKeys.policyHash(msg.policyId()),
                     "stock",
                     1
             );
 
-            return;
+            throw e;
         }
     }
 
