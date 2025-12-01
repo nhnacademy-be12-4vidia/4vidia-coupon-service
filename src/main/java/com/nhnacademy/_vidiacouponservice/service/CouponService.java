@@ -1,5 +1,6 @@
 package com.nhnacademy._vidiacouponservice.service;
 
+import com.nhnacademy._vidiacouponservice.config.RedisKeys;
 import com.nhnacademy._vidiacouponservice.domain.CouponPolicy;
 import com.nhnacademy._vidiacouponservice.domain.dto.CouponIssueMessage;
 import com.nhnacademy._vidiacouponservice.exception.PolicyInactiveException;
@@ -41,8 +42,8 @@ public class CouponService {
         redisTemplate.expire(dupKey, Duration.ofSeconds(60));
 
         // 재고 감소(DECR)
-        String stockKey = "coupon:policy:" + policyId + ":stock";
-        Long remain = redisTemplate.opsForValue().decrement(stockKey);
+        Long remain = redisTemplate.opsForHash()
+                .increment(RedisKeys.policyHash(policyId), "stock", -1);
 
         if (remain == null) throw new PolicyStockMissingException(policyId);
         if (remain < 0) throw new PolicyOutOfStockException(policyId); // 재고 초과발급시도

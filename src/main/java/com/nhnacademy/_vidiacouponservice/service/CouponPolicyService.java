@@ -2,6 +2,7 @@ package com.nhnacademy._vidiacouponservice.service;
 
 
 
+import com.nhnacademy._vidiacouponservice.config.RedisKeys;
 import com.nhnacademy._vidiacouponservice.domain.CouponPolicy;
 import com.nhnacademy._vidiacouponservice.domain.dto.CouponPolicyCreateRequest;
 import com.nhnacademy._vidiacouponservice.domain.dto.CouponPolicyUpdateRequest;
@@ -24,16 +25,14 @@ public class CouponPolicyService {
         CouponPolicy policy = CouponPolicy.create(dto);
         CouponPolicy saved = couponPolicyRepository.save(policy);
 
-        // ✔ 재고 초기화
-        if (saved.getLimitedQuantity() != null) {
-            String stockKey = "coupon:policy:" + saved.getPolicyId() + ":stock";
-            redisTemplate.opsForValue().set(stockKey, String.valueOf(saved.getLimitedQuantity()));
-        }
+        // 🔥 Redis Hash로 저장
+        String key = RedisKeys.policyHash(saved.getPolicyId());
+        redisTemplate.opsForHash().put(key, "stock", saved.getLimitedQuantity());
+        redisTemplate.opsForHash().put(key, "issued", 0);
+        redisTemplate.opsForHash().put(key, "maxDiscountAmount", saved.getMaxDiscountAmount());
 
         return saved;
     }
-
-
 
     public CouponPolicy updatePolicy(Long id, CouponPolicyUpdateRequest dto) {
         CouponPolicy policy = findPolicy(id);

@@ -14,6 +14,9 @@ public class RabbitMQConfig {
 
     // 선착순
     public static final String ISSUE_QUEUE = "coupon4.issue.queue";
+    public static final String ISSUE_DLQ = "coupon4.issue.dlq";
+    public static final String ISSUE_DLX = "coupon4.issue.dlx";
+
     // 재고의 상한이 있는 이벤트쿠폰
     public static final String STOCK_QUEUE = "coupon4.stock.queue";
     // birthday/welcome 같은 재고없는 쿠폰
@@ -26,8 +29,23 @@ public class RabbitMQConfig {
     }
 
     @Bean
+    public DirectExchange issueDlx() {
+        return new DirectExchange(ISSUE_DLX);
+    }
+
+    @Bean
+    public Queue issueDlq() {
+        return QueueBuilder.durable(ISSUE_DLQ).build();
+    }
+
+
+
+    @Bean
     public Queue issueQueue() {
-        return new Queue(ISSUE_QUEUE, true);
+        return QueueBuilder.durable(ISSUE_QUEUE)
+                .withArgument("x-dead-letter-exchange", ISSUE_DLX)
+                .withArgument("x-dead-letter-routing-key", "dlq")
+                .build();
     }
 
     @Bean
@@ -39,6 +57,15 @@ public class RabbitMQConfig {
     public Queue eventQueue() {
         return new Queue(EVENT_QUEUE, true);
     }
+
+    @Bean
+    public Binding issueDlqBinding() {
+        return BindingBuilder
+                .bind(issueDlq())
+                .to(issueDlx())
+                .with("dlq");
+    }
+
 
     @Bean
     public Binding issueBinding() {

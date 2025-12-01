@@ -54,8 +54,11 @@ CREATE TABLE coupon (
 CREATE TABLE user_coupon (
                              coupon_id BIGINT NOT NULL COMMENT '쿠폰ID',
                              user_id   BIGINT NOT NULL COMMENT '유저ID',
+                             policy_id BIGINT NOT NULL COMMENT '정책ID (중복방지용)',
 
                              PRIMARY KEY (coupon_id, user_id),
+
+                             UNIQUE KEY uq_user_policy (policy_id, user_id),
 
                              CONSTRAINT fk_user_coupon_coupon
                                  FOREIGN KEY (coupon_id) REFERENCES coupon(coupon_id)
