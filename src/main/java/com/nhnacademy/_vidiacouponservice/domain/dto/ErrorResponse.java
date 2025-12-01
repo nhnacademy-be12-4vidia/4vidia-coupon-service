@@ -2,16 +2,27 @@ package com.nhnacademy._vidiacouponservice.domain.dto;
 
 import com.nhnacademy._vidiacouponservice.exception.ErrorCode;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
-@Getter
-@AllArgsConstructor
-public class ErrorResponse {
-    private final int code;
-    private final String message;
-    private final Object details;
+import java.time.LocalDateTime;
 
-    public static ErrorResponse of(ErrorCode code, Object details) {
-        return new ErrorResponse(code.getCode(), code.getMessage(), details);
+@Getter
+@Builder
+public class ErrorResponse {
+
+    private final String error;        // error name (enum name)
+    private final String message;      // 상세 메시지
+    private final int status;          // HTTP status
+    private final LocalDateTime timestamp;
+
+    public static ErrorResponse of(ErrorCode code, String detailMessage) {
+        return ErrorResponse.builder()
+                .error(code.name())
+                .message(detailMessage)
+                .status(code.getStatus().value())
+                .timestamp(LocalDateTime.now())
+                .build();
     }
+
 }

@@ -1,71 +1,69 @@
-package com.nhnacademy._vidiacouponservice.exception;
+package com.nhnacademy._vidiacouponservice.advice;
 
 import com.nhnacademy._vidiacouponservice.domain.dto.ErrorResponse;
+import com.nhnacademy._vidiacouponservice.exception.*;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
-@RestControllerAdvice
 @Slf4j
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // ---- 정책 없음 ----
+    private ResponseEntity<ErrorResponse> build(ErrorCode code, Exception ex) {
+        return ResponseEntity
+                .status(code.getStatus())
+                .body(ErrorResponse.of(code, ex.getMessage()));
+    }
+
+    // ---- 정책 NotFound ----
     @ExceptionHandler(PolicyNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handlePolicyNotFound(PolicyNotFoundException ex) {
-        return ErrorResponse.of(ErrorCode.POLICY_NOT_FOUND, ex.getMessage());
+    public ResponseEntity<ErrorResponse> handlePolicyNotFound(PolicyNotFoundException ex) {
+        return build(ErrorCode.POLICY_NOT_FOUND, ex);
     }
 
     // ---- 정책 비활성 ----
     @ExceptionHandler(PolicyInactiveException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleInactive(PolicyInactiveException ex) {
-        return ErrorResponse.of(ErrorCode.POLICY_INACTIVE, ex.getMessage());
+    public ResponseEntity<ErrorResponse> handleInactive(PolicyInactiveException ex) {
+        return build(ErrorCode.POLICY_INACTIVE, ex);
     }
 
-    // ---- 재고 없음 ----
+    // ---- 재고 없음 (Redis key 없음) ----
     @ExceptionHandler(PolicyStockMissingException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleStockMissing(PolicyStockMissingException ex) {
-        return ErrorResponse.of(ErrorCode.POLICY_INVALID, ex.getMessage());
+    public ResponseEntity<ErrorResponse> handleStockMissing(PolicyStockMissingException ex) {
+        return build(ErrorCode.POLICY_STOCK_MISSING, ex);
     }
 
     // ---- 매진 ----
     @ExceptionHandler(PolicyOutOfStockException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleOutOfStock(PolicyOutOfStockException ex) {
-        return ErrorResponse.of(ErrorCode.POLICY_OUT_OF_STOCK, ex.getMessage());
+    public ResponseEntity<ErrorResponse> handleOutOfStock(PolicyOutOfStockException ex) {
+        return build(ErrorCode.POLICY_OUT_OF_STOCK, ex);
     }
 
     // ---- 기본 IllegalArgument ----
     @ExceptionHandler(IllegalArgumentException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleIllegalArgument(IllegalArgumentException ex) {
-        return ErrorResponse.of(ErrorCode.POLICY_INVALID, ex.getMessage());
+    public ResponseEntity<ErrorResponse> handleIllegalArgument(IllegalArgumentException ex) {
+        return build(ErrorCode.POLICY_INVALID, ex);
     }
 
-    // ---- 마지막 fallback ----
+    // ---- Fallback ----
     @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleException(Exception ex) {
+    public ResponseEntity<ErrorResponse> handleException(Exception ex) {
         log.error("UNEXPECTED ERROR", ex);
-        return ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR, ex.getMessage());
+        return build(ErrorCode.INTERNAL_SERVER_ERROR, ex);
     }
 
+    // ---- NoResource ----
     @ExceptionHandler(NoResourceFoundException.class)
-    public ResponseEntity<Void> handleNoResource(NoResourceFoundException e) {
-        // .well-known/appspecific/ 인 경우는 그냥 로그도 안 찍고 넘기기
+    public ResponseEntity<ErrorResponse> handleNoResource(NoResourceFoundException e) {
+
         if (e.getResourcePath() != null &&
                 e.getResourcePath().startsWith("/.well-known/appspecific/")) {
             return ResponseEntity.notFound().build();
         }
 
-        // 나머지는 기존 로직 태우기
-        log.error("UNEXPECTED ERROR", e);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        return build(ErrorCode.POLICY_NOT_FOUND, e);
     }
 }
