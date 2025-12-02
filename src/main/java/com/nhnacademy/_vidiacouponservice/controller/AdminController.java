@@ -20,4 +20,5 @@ public class AdminController {
      public String policyListPage(){
         return "policy-list";
      }
+
 }

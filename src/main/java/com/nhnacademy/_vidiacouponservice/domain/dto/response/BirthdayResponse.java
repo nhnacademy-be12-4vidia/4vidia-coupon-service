@@ -1,4 +1,4 @@
-package com.nhnacademy._vidiacouponservice.domain.dto;
+package com.nhnacademy._vidiacouponservice.domain.dto.response;
 
 import java.time.LocalDate;
 

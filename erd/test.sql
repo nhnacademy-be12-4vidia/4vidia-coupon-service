@@ -1,4 +1,6 @@
-
+drop table user_coupon;
+drop table coupon;
+drop table coupon_policy;
 
 -- 1. 쿠폰_정책 테이블
 CREATE TABLE coupon_policy (
@@ -42,6 +44,9 @@ CREATE TABLE coupon (
                         used_at         DATETIME  NULL COMMENT '사용일자',
 
                         status          TINYINT   NOT NULL DEFAULT 0 COMMENT '상태 (0=UNUSED,1=USED,2=EXPIRED)',
+
+                        user_order_id   BIGINT    NULL COMMENT '어떤 주문에서 사용했는지',
+
 
                         PRIMARY KEY (coupon_id),
                         CONSTRAINT fk_coupon_policy
