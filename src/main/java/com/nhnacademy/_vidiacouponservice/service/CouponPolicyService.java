@@ -4,8 +4,8 @@ package com.nhnacademy._vidiacouponservice.service;
 
 import com.nhnacademy._vidiacouponservice.config.RedisKeys;
 import com.nhnacademy._vidiacouponservice.domain.CouponPolicy;
-import com.nhnacademy._vidiacouponservice.domain.dto.CouponPolicyCreateRequest;
-import com.nhnacademy._vidiacouponservice.domain.dto.CouponPolicyUpdateRequest;
+import com.nhnacademy._vidiacouponservice.domain.dto.request.CouponPolicyCreateRequest;
+import com.nhnacademy._vidiacouponservice.domain.dto.request.CouponPolicyUpdateRequest;
 import com.nhnacademy._vidiacouponservice.exception.PolicyNotFoundException;
 import com.nhnacademy._vidiacouponservice.repository.CouponPolicyRepository;
 import lombok.RequiredArgsConstructor;

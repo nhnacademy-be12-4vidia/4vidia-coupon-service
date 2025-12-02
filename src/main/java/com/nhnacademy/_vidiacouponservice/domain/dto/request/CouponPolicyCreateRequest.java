@@ -1,6 +1,4 @@
-package com.nhnacademy._vidiacouponservice.domain.dto;
-
-
+package com.nhnacademy._vidiacouponservice.domain.dto.request;
 
 import com.nhnacademy._vidiacouponservice.domain.common.DiscountTargetType;
 import com.nhnacademy._vidiacouponservice.domain.common.DiscountType;
@@ -9,7 +7,7 @@ import com.nhnacademy._vidiacouponservice.domain.common.ValidityType;
 
 import java.time.LocalDateTime;
 
-public record CouponPolicyUpdateRequest(
+public record CouponPolicyCreateRequest(
         String policyName,
         PolicyType policyType,
         DiscountType discountType,
@@ -26,4 +24,3 @@ public record CouponPolicyUpdateRequest(
         Integer maxDiscountAmount,
         Boolean isActivation
 ) {}
-

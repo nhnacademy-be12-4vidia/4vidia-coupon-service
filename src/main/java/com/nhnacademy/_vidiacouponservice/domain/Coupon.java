@@ -28,15 +28,18 @@ public class Coupon {
     @JoinColumn(name = "coupon_policy_id", nullable = false)
     private CouponPolicy couponPolicy;
 
-    @Column(nullable = false)
+    @Column(name = "issued_at", nullable = false)
     private LocalDateTime issuedAt;
-    @Column(nullable = false)
+    @Column(name = "expire_at", nullable = false)
     private LocalDateTime expireAt;
+    @Column(name = "used_at")
     private LocalDateTime usedAt;
 
     @Convert(converter = CouponStatusConverter.class)
     @Column(nullable = false)
     private CouponStatus status;
 
+    @Column(name = "user_order_id")
+    private Long userOrderId;
 
 }

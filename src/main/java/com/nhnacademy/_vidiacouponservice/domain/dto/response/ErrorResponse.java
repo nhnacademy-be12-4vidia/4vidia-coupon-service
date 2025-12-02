@@ -1,7 +1,6 @@
-package com.nhnacademy._vidiacouponservice.domain.dto;
+package com.nhnacademy._vidiacouponservice.domain.dto.response;
 
 import com.nhnacademy._vidiacouponservice.exception.ErrorCode;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 

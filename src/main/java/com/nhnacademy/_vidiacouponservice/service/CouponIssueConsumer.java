@@ -58,11 +58,21 @@ public class CouponIssueConsumer {
             CouponPolicy policy = policyRepo.findById(msg.policyId())
                     .orElseThrow(() -> new PolicyInactiveException(msg.policyId()));
 
+
+            // 활성화 X → 발급 안됨
+            if (!policy.getIsActivation()) {
+                throw new PolicyInactiveException(msg.policyId());
+            }
+
+            // 2) 발급 시점 / 만료일 계산
+            LocalDateTime issuedAt = LocalDateTime.now();
+            LocalDateTime expireAt = calcExpire(policy, issuedAt);
+
             //쿠폰생성
             Coupon coupon = new Coupon();
             coupon.setCouponPolicy(policy);
-            coupon.setIssuedAt(LocalDateTime.now());
-            coupon.setExpireAt(calcExpire(policy));
+            coupon.setIssuedAt(issuedAt);
+            coupon.setExpireAt(expireAt);
             coupon.setStatus(CouponStatus.UNUSED);
             couponRepo.save(coupon);
 
@@ -92,9 +102,9 @@ public class CouponIssueConsumer {
     }
 
 
-    private LocalDateTime calcExpire(CouponPolicy p) {
+    private LocalDateTime calcExpire(CouponPolicy p, LocalDateTime issuedAt) {
         if (p.getValidityType() == ValidityType.RELATIVE)
-            return LocalDateTime.now().plusDays(p.getValidDays());
+            return issuedAt.plusDays(p.getValidDays());
         return p.getEndDate();
     }
 }

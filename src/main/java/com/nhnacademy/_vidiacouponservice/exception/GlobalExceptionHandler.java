@@ -1,6 +1,7 @@
 package com.nhnacademy._vidiacouponservice.exception;
 
-import com.nhnacademy._vidiacouponservice.domain.dto.ErrorResponse;
+import com.nhnacademy._vidiacouponservice.domain.Coupon;
+import com.nhnacademy._vidiacouponservice.domain.dto.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -40,6 +41,19 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleOutOfStock(PolicyOutOfStockException ex) {
         return build(ErrorCode.POLICY_OUT_OF_STOCK, ex);
     }
+
+    // 쿠폰 이미 사용됨
+    @ExceptionHandler(CouponAlreadyUsed.class)
+    public ResponseEntity<ErrorResponse> handleAlreadyUsed(CouponAlreadyUsed ex) {
+        return build(ErrorCode.COUPON_ALREADY_USED, ex);
+    }
+
+    // 쿠폰이 없음
+    @ExceptionHandler(CouponNotHoldException.class)
+    public ResponseEntity<ErrorResponse> handleNotHold(CouponNotHoldException ex) {
+        return build(ErrorCode.COUPON_NOT_HOLD, ex);
+    }
+
 
     // ---- 기본 IllegalArgument ----
     @ExceptionHandler(IllegalArgumentException.class)

@@ -9,8 +9,8 @@ import com.nhnacademy._vidiacouponservice.domain.converter.DiscountTargetTypeCon
 import com.nhnacademy._vidiacouponservice.domain.converter.DiscountTypeConverter;
 import com.nhnacademy._vidiacouponservice.domain.converter.PolicyTypeConverter;
 import com.nhnacademy._vidiacouponservice.domain.converter.ValidityTypeConverter;
-import com.nhnacademy._vidiacouponservice.domain.dto.CouponPolicyCreateRequest;
-import com.nhnacademy._vidiacouponservice.domain.dto.CouponPolicyUpdateRequest;
+import com.nhnacademy._vidiacouponservice.domain.dto.request.CouponPolicyCreateRequest;
+import com.nhnacademy._vidiacouponservice.domain.dto.request.CouponPolicyUpdateRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

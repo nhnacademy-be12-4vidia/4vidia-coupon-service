@@ -2,9 +2,8 @@ package com.nhnacademy._vidiacouponservice.controller;
 
 
 import com.nhnacademy._vidiacouponservice.domain.CouponPolicy;
-import com.nhnacademy._vidiacouponservice.domain.dto.ChangeActivationRequest;
-import com.nhnacademy._vidiacouponservice.domain.dto.CouponPolicyCreateRequest;
-import com.nhnacademy._vidiacouponservice.domain.dto.CouponPolicyUpdateRequest;
+import com.nhnacademy._vidiacouponservice.domain.dto.request.CouponPolicyCreateRequest;
+import com.nhnacademy._vidiacouponservice.domain.dto.request.CouponPolicyUpdateRequest;
 import com.nhnacademy._vidiacouponservice.service.CouponPolicyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

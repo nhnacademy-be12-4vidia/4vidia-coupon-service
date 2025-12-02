@@ -370,7 +370,7 @@
         const out = document.getElementById("issueResult");
 
         try {
-            const res = await fetch(`/${policyId}/issue?userId=${userId}`, { method: "POST" });
+            const res = await fetch(`/policies/${policyId}/issue?userId=${userId}`, { method: "POST" });
             out.innerText = `HTTP ${res.status}`;
         } catch (err) {
             out.innerText = "오류 발생";
