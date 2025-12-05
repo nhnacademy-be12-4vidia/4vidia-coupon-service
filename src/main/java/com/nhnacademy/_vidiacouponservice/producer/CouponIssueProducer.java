@@ -2,6 +2,7 @@ package com.nhnacademy._vidiacouponservice.producer;
 
 import com.nhnacademy._vidiacouponservice.config.RabbitMQConfig;
 import com.nhnacademy._vidiacouponservice.domain.dto.CouponIssueMessage;
+import com.nhnacademy._vidiacouponservice.domain.dto.RollbackCouponMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
@@ -40,6 +41,14 @@ public class CouponIssueProducer {
                 RabbitMQConfig.EXCHANGE,
                 "coupon4.event.requested",
                 msg
+        );
+    }
+
+    public void sendRollback(Long orderId) {
+        rabbit.convertAndSend(
+                RabbitMQConfig.EXCHANGE,
+                "coupon4.use.rollback",
+                orderId
         );
     }
 }

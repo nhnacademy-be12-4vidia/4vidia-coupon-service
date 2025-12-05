@@ -32,6 +32,9 @@ public class RabbitMQConfig {
 
     public static final String ISSUE_DLX_ROUTING_KEY = "coupon4.issue.failed";
 
+    public static final String ROLLBACK_QUEUE = "coupon4.rollback.queue";
+    public static final String ROLLBACK_ROUTING_KEY = "coupon4.use.rollback";
+
     @Bean
     public TopicExchange couponExchange() {
         return new TopicExchange(EXCHANGE);
@@ -79,6 +82,19 @@ public class RabbitMQConfig {
                 .to(couponExchange())
                 .with(ISSUE_DLX_ROUTING_KEY);
     }
+
+    @Bean
+    public Queue rollbackQueue() {
+        return QueueBuilder.durable(ROLLBACK_QUEUE).build();
+    }
+
+    @Bean
+    public Binding rollbackBinding() {
+        return BindingBuilder.bind(rollbackQueue())
+                .to(couponExchange())
+                .with(ROLLBACK_ROUTING_KEY);
+    }
+
 
     @Bean
     public MessageConverter jacksonMessageConverter() {

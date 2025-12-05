@@ -16,5 +16,7 @@ public interface CouponRepository extends JpaRepository<Coupon, Long> {
     // 정책 ID 기반 쿠폰 조회
     List<Coupon> findAllByCouponPolicy_PolicyId(Long policyId);
 
+    List<Coupon> findAllByUserOrderId(Long orderId);
+
     List<Coupon> findTop5000ByStatusAndExpireAtBefore(CouponStatus status, LocalDateTime now);
 }

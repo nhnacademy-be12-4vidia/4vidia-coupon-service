@@ -6,6 +6,8 @@ import com.nhnacademy._vidiacouponservice.domain.CouponPolicy;
 import com.nhnacademy._vidiacouponservice.domain.UserCoupon;
 import com.nhnacademy._vidiacouponservice.domain.common.CouponStatus;
 import com.nhnacademy._vidiacouponservice.domain.dto.CouponIssueMessage;
+import com.nhnacademy._vidiacouponservice.domain.dto.RollbackCouponMessage;
+import com.nhnacademy._vidiacouponservice.exception.CouponNotHoldException;
 import com.nhnacademy._vidiacouponservice.exception.PolicyNotFoundException;
 import com.nhnacademy._vidiacouponservice.repository.CouponPolicyRepository;
 import com.nhnacademy._vidiacouponservice.repository.CouponRepository;
@@ -17,6 +19,9 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Objects;
 
 /**
  * MQ에서 메시지 하나씩 소비함
@@ -98,4 +103,22 @@ public class CouponIssueConsumer {
             return;
         }
     }
+
+    // ----- 롤백 처리 -----
+    @RabbitListener(queues = "coupon4.rollback.queue")
+    @Transactional
+    public void rollback(Long orderId) {
+
+        List<Coupon> usedCoupons = couponRepo.findAllByUserOrderId(orderId);
+
+        for (Coupon c : usedCoupons) {
+
+            c.setStatus(CouponStatus.UNUSED);
+            c.setUsedAt(null);
+            c.setUserOrderId(null);
+
+            couponRepo.save(c);
+        }
+    }
+
 }
