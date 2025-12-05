@@ -1,8 +1,10 @@
 package com.nhnacademy._vidiacouponservice.domain.dto.request;
 
+import java.util.List;
+
 public record CouponValidateRequest(
-        Long userId,
-        Long orderAmount,
-        Long bookId,
-        Long categoryId
+        Long couponId,
+        int amount,
+        List<Long> bookIds,
+        List<Long> categoryIds
 ) {}

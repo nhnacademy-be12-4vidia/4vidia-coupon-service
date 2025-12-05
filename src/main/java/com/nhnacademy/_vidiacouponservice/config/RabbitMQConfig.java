@@ -1,27 +1,36 @@
 package com.nhnacademy._vidiacouponservice.config;
 
-
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.amqp.core.*;
+import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
+import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-
+@AutoConfigureOrder(0)
 @Configuration
 public class RabbitMQConfig {
 
     public static final String EXCHANGE = "coupon4.exchange";
 
-    // 선착순
+    // 정상 처리 queue
     public static final String ISSUE_QUEUE = "coupon4.issue.queue";
-    public static final String ISSUE_DLQ = "coupon4.issue.dlq";
-    public static final String ISSUE_DLX = "coupon4.issue.dlx";
+    public static final String EVENT_QUEUE = "coupon4.event.queue";
 
-    // 재고의 상한이 있는 이벤트쿠폰
-    public static final String STOCK_QUEUE = "coupon4.stock.queue";
-    // birthday/welcome 같은 재고없는 쿠폰
-    public static final String EVENT_QUEUE = "coupon4.events.queue";
+    // DLQ
+    public static final String DEAD_LETTER_QUEUE = "coupon4.issue.dlq";
 
+    // routing keys
+    public static final String ISSUE_ROUTING_KEY = "coupon4.issue.requested";
+    public static final String EVENT_ROUTING_KEY = "coupon4.event.requested";
+
+    public static final String ISSUE_DLX_ROUTING_KEY = "coupon4.issue.failed";
 
     @Bean
     public TopicExchange couponExchange() {
@@ -29,58 +38,30 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public DirectExchange issueDlx() {
-        return new DirectExchange(ISSUE_DLX);
-    }
-
-    @Bean
-    public Queue issueDlq() {
-        return QueueBuilder.durable(ISSUE_DLQ).build();
-    }
-
-
-
-    @Bean
     public Queue issueQueue() {
         return QueueBuilder.durable(ISSUE_QUEUE)
-                .withArgument("x-dead-letter-exchange", ISSUE_DLX)
-                .withArgument("x-dead-letter-routing-key", "dlq")
+                .withArgument("x-dead-letter-exchange", EXCHANGE)
+                .withArgument("x-dead-letter-routing-key", ISSUE_DLX_ROUTING_KEY)
                 .build();
     }
 
     @Bean
-    public Queue stockQueue() {
-        return new Queue(STOCK_QUEUE, true);
-    }
-
-    @Bean
     public Queue eventQueue() {
-        return new Queue(EVENT_QUEUE, true);
+        return QueueBuilder.durable(EVENT_QUEUE)
+                .build();
     }
 
     @Bean
-    public Binding issueDlqBinding() {
-        return BindingBuilder
-                .bind(issueDlq())
-                .to(issueDlx())
-                .with("dlq");
+    public Queue deadLetterQueue() {
+        return QueueBuilder.durable(DEAD_LETTER_QUEUE).build();
     }
-
 
     @Bean
     public Binding issueBinding() {
         return BindingBuilder
                 .bind(issueQueue())
                 .to(couponExchange())
-                .with("coupon4.issue.#");
-    }
-
-    @Bean
-    public Binding stockBinding() {
-        return BindingBuilder
-                .bind(stockQueue())
-                .to(couponExchange())
-                .with("coupon4.stock.#");
+                .with(ISSUE_ROUTING_KEY);
     }
 
     @Bean
@@ -88,6 +69,41 @@ public class RabbitMQConfig {
         return BindingBuilder
                 .bind(eventQueue())
                 .to(couponExchange())
-                .with("coupon4.events.*");
+                .with(EVENT_ROUTING_KEY);
     }
+
+    @Bean
+    public Binding dlqBinding() {
+        return BindingBuilder
+                .bind(deadLetterQueue())
+                .to(couponExchange())
+                .with(ISSUE_DLX_ROUTING_KEY);
+    }
+
+    @Bean
+    public MessageConverter jacksonMessageConverter() {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        return new Jackson2JsonMessageConverter(mapper);
+    }
+
+    @Bean
+    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory, MessageConverter converter) {
+        RabbitTemplate template = new RabbitTemplate(connectionFactory);
+        template.setMessageConverter(converter);
+        return template;
+    }
+
+    @Bean
+    public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(
+            ConnectionFactory connectionFactory,
+            MessageConverter converter
+    ) {
+        SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
+        factory.setConnectionFactory(connectionFactory);
+        factory.setMessageConverter(converter); // ★ 핵심
+        return factory;
+    }
+
 }

@@ -43,8 +43,8 @@ public class GlobalExceptionHandler {
     }
 
     // 쿠폰 이미 사용됨
-    @ExceptionHandler(CouponAlreadyUsed.class)
-    public ResponseEntity<ErrorResponse> handleAlreadyUsed(CouponAlreadyUsed ex) {
+    @ExceptionHandler(CouponAlreadyUsedException.class)
+    public ResponseEntity<ErrorResponse> handleAlreadyUsed(CouponAlreadyUsedException ex) {
         return build(ErrorCode.COUPON_ALREADY_USED, ex);
     }
 
@@ -52,6 +52,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CouponNotHoldException.class)
     public ResponseEntity<ErrorResponse> handleNotHold(CouponNotHoldException ex) {
         return build(ErrorCode.COUPON_NOT_HOLD, ex);
+    }
+
+    // 쿠폰이 만료됨
+    @ExceptionHandler(CouponExpireException.class)
+    public ResponseEntity<ErrorResponse> handleExpiredCoupon(CouponExpireException ex) {
+        return build(ErrorCode.COUPON_EXPIRED, ex);
     }
 
 

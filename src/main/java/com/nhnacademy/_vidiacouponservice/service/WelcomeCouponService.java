@@ -11,13 +11,13 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class WelcomeCouponService {
     private final CouponPolicyRepository couponPolicyRepository;
-    private final CouponService couponService;
+    private final CouponEventIssueService couponService;
 
     public void giveWelcomeCoupon(Long userId){
         CouponPolicy policy = couponPolicyRepository.findByPolicyType(PolicyType.WELCOME)
-                .orElseThrow(() -> new IllegalArgumentException("WELLCOME 정책 없음"));
+                .orElseThrow(() -> new IllegalArgumentException("WELCOME 정책 없음"));
 
-        couponService.issue2(userId, policy.getPolicyId());
+        couponService.issueEventCoupon(userId, policy.getPolicyId());
     }
 
 }

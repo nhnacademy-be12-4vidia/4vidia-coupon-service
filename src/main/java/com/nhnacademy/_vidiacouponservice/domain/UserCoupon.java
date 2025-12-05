@@ -20,12 +20,16 @@ public class UserCoupon {
     @JoinColumn(name = "coupon_id", nullable = false)
     private Coupon coupon;
 
+    @Column(name = "user_id", nullable = false, insertable = false, updatable = false)
+    private Long userId;
+
     @Column(name = "policy_id",  nullable = false)
     private Long policyId;
 
     public UserCoupon(Long userId, Coupon coupon) {
         this.coupon =  coupon;
         this.id = new UserCouponId(coupon.getCouponId(), userId);
+        this.userId = userId;
         this.policyId = coupon.getCouponPolicy().getPolicyId();
     }
 }
