@@ -111,7 +111,7 @@ Content-Type: application/json
 
 
 ### 2-1. 선착순 쿠폰 발급 (재고 있는 정책)
-POST http://localhost:8080/coupons/2/issue
+POST http://localhost:8080/coupons/1/issue
 X-User-Id: 10
 Content-Type: application/json
 
@@ -202,7 +202,7 @@ POST http://localhost:8080/policies
 Content-Type: application/json
 
 {
-"policyName": "10000원 이벤트쿠폰",
+"policyName": "5000원 이벤트쿠폰",
 "policyType": "EVENT",
 "discountType": "PRICE",
 "discountTargetType": "ALL",

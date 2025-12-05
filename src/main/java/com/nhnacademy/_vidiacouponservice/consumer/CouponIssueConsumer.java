@@ -11,7 +11,9 @@ import com.nhnacademy._vidiacouponservice.repository.CouponPolicyRepository;
 import com.nhnacademy._vidiacouponservice.repository.CouponRepository;
 import com.nhnacademy._vidiacouponservice.repository.UserCouponRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
  * topic: coupon.issue.# 에 묶인 큐에서 메시지를 소비한다.
  */
 
-
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class CouponIssueConsumer {
@@ -52,6 +54,15 @@ public class CouponIssueConsumer {
         // user_coupon 생성
         userCouponRepo.save(new UserCoupon(msg.userId(), coupon));
 
+        try {
+            // 이미 user_coupon이 존재하면 UNIQUE 에러 발생 → catch로 가게 됨
+            userCouponRepo.save(new UserCoupon(msg.userId(), coupon));
+        } catch (DataIntegrityViolationException e) {
+            // 여기서 무시하지 않으면 MQ는 재시도 → 무한재시도 지옥 발생 가능
+            log.warn("중복 발급 메시지 감지 → 무시함 user={}, policy={}", msg.userId(), msg.policyId());
+            return;
+        }
+
         // issued_quantity += 1
         policy.increaseIssuedQuantity();
         policyRepo.save(policy);
@@ -77,5 +88,14 @@ public class CouponIssueConsumer {
 
         couponRepo.save(coupon);
         userCouponRepo.save(new UserCoupon(msg.userId(), coupon));
+
+        try {
+            // 이미 user_coupon이 존재하면 UNIQUE 에러 발생 → catch로 가게 됨
+            userCouponRepo.save(new UserCoupon(msg.userId(), coupon));
+        } catch (DataIntegrityViolationException e) {
+            // 여기서 무시하지 않으면 MQ는 재시도 → 무한재시도 지옥 발생 가능
+            log.warn("중복 발급 메시지 감지 → 무시함 user={}, policy={}", msg.userId(), msg.policyId());
+            return;
+        }
     }
 }
