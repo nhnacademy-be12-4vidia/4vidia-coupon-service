@@ -17,6 +17,6 @@ public class CouponUseController {
             @RequestHeader("X-User-Id") Long userId,
             @RequestBody CouponUseRequest req
     ) {
-        couponUseService.useCoupon(userId, req);
+        couponUseService.useCoupons(userId, req);
     }
 }

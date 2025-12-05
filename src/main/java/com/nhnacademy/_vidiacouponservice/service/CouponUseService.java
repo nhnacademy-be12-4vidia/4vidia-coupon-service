@@ -10,6 +10,7 @@ import com.nhnacademy._vidiacouponservice.repository.CouponRepository;
 import com.nhnacademy._vidiacouponservice.repository.UserCouponRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -20,33 +21,39 @@ public class CouponUseService {
     private final UserCouponRepository userCouponRepo;
     private final CouponRepository couponRepo;
 
-    public void useCoupon(Long userId, CouponUseRequest req) {
+    @Transactional
+    public void useCoupons(Long userId, CouponUseRequest req) {
 
-        // 1) 유저의 쿠폰인지 먼저 확인
-        userCouponRepo.findByIdUserIdAndIdCouponId(userId, req.couponId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 유저의 쿠폰이 아닙니다."));
+        Long orderId = req.orderId();
 
-        // 2) 쿠폰 본체 조회
-        Coupon coupon = couponRepo.findById(req.couponId())
-                .orElseThrow(() -> new CouponNotHoldException(null));
+        for (Long couponId : req.couponIds()) {
 
-        // 3) 이미 사용되거나 만료됨
-        if (coupon.getStatus() != CouponStatus.UNUSED) {
-            throw new CouponAlreadyUsedException(null);
-        }
+            // 1) 유저가 해당 쿠폰을 소유했는지 체크
+            userCouponRepo.findByIdUserIdAndIdCouponId(userId, couponId)
+                    .orElseThrow(() -> new CouponNotHoldException(couponId));
 
-        // 4) 쿠폰 만료됨
-        if (coupon.getExpireAt().isBefore(LocalDateTime.now())) {
-            coupon.setStatus(CouponStatus.EXPIRED);
+            // 2) 쿠폰 엔티티 조회
+            Coupon coupon = couponRepo.findById(couponId)
+                    .orElseThrow(() -> new CouponNotHoldException(couponId));
+
+            // 3) 이미 사용된 쿠폰인지 체크
+            if (coupon.getStatus() != CouponStatus.UNUSED) {
+                throw new CouponAlreadyUsedException(couponId);
+            }
+
+            // 4) 만료 여부 체크
+            if (coupon.getExpireAt().isBefore(LocalDateTime.now())) {
+                coupon.setStatus(CouponStatus.EXPIRED);
+                couponRepo.save(coupon);
+                throw new CouponExpireException(couponId);
+            }
+
+            // 5) 쿠폰 사용 처리
+            coupon.setUsedAt(LocalDateTime.now());
+            coupon.setUserOrderId(orderId);
+            coupon.setStatus(CouponStatus.USED);
+
             couponRepo.save(coupon);
-            throw new CouponExpireException(null);
         }
-
-        coupon.setUsedAt(LocalDateTime.now());
-        coupon.setUserOrderId(req.orderId());
-        coupon.setStatus(CouponStatus.USED);
-
-        couponRepo.save(coupon);
     }
-
 }
