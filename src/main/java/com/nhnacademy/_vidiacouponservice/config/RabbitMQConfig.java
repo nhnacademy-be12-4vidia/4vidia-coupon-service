@@ -9,6 +9,7 @@ import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,8 +33,6 @@ public class RabbitMQConfig {
 
     public static final String ISSUE_DLX_ROUTING_KEY = "coupon4.issue.failed";
 
-    public static final String ROLLBACK_QUEUE = "coupon4.rollback.queue";
-    public static final String ROLLBACK_ROUTING_KEY = "coupon4.use.rollback";
 
     @Bean
     public TopicExchange couponExchange() {
@@ -83,17 +82,6 @@ public class RabbitMQConfig {
                 .with(ISSUE_DLX_ROUTING_KEY);
     }
 
-    @Bean
-    public Queue rollbackQueue() {
-        return QueueBuilder.durable(ROLLBACK_QUEUE).build();
-    }
-
-    @Bean
-    public Binding rollbackBinding() {
-        return BindingBuilder.bind(rollbackQueue())
-                .to(couponExchange())
-                .with(ROLLBACK_ROUTING_KEY);
-    }
 
 
     @Bean

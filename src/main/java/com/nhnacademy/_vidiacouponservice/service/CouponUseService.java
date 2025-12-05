@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -56,4 +57,18 @@ public class CouponUseService {
             couponRepo.save(coupon);
         }
     }
+
+    @Transactional
+    public void rollbackCoupons(Long orderId) {
+
+        List<Coupon> usedList = couponRepo.findAllByUserOrderId(orderId);
+
+        for (Coupon c : usedList) {
+            c.setStatus(CouponStatus.UNUSED);
+            c.setUsedAt(null);
+            c.setUserOrderId(null);
+            couponRepo.save(c);
+        }
+    }
+
 }

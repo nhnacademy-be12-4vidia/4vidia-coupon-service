@@ -43,12 +43,4 @@ public class CouponIssueProducer {
                 msg
         );
     }
-
-    public void sendRollback(Long orderId) {
-        rabbit.convertAndSend(
-                RabbitMQConfig.EXCHANGE,
-                "coupon4.use.rollback",
-                orderId
-        );
-    }
 }
