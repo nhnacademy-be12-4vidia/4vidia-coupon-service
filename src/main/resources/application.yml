@@ -7,6 +7,10 @@ spring:
     username: project_be12_team4
     password: Qrs8WavVsmxaQd[O
 
+  devtools:
+    restart:
+      enabled: false
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -35,7 +39,10 @@ spring:
     password: nhnacademy123!
     listener:
       simple:
-        default-deserialization-allowed-patterns: "com.nhnacademy._vidiacouponservice.**,java.util.**"
+        acknowledge-mode: auto
+        default-requeue-rejected: false
+        prefetch: 1
+        default-deserialization-allowed-patterns: "*"
 
 server:
   port: 8080

@@ -92,6 +92,14 @@ public class CouponPolicy {
     @Column(name = "is_activation",  nullable = false)
     private Boolean isActivation;
 
+    /**
+     * DB issued_quantity증가용
+     */
+    public void increaseIssuedQuantity() {
+        this.issuedQuantity = this.issuedQuantity + 1;
+    }
+
+
 
     //service용
     public static CouponPolicy create(CouponPolicyCreateRequest dto) {
