@@ -104,5 +104,22 @@ public class CouponIssueConsumer {
         }
     }
 
+    // ----- 롤백 처리 -----
+    @RabbitListener(queues = "coupon4.rollback.queue",
+            containerFactory = "rabbitListenerContainerFactory")
+    @Transactional
+    public void rollback(Long orderId) {
+        log.error("🔥🔥 ROLLBACK 메시지 받음 orderId={}", orderId);
+        List<Coupon> usedCoupons = couponRepo.findAllByUserOrderId(orderId);
+
+        for (Coupon c : usedCoupons) {
+
+            c.setStatus(CouponStatus.UNUSED);
+            c.setUsedAt(null);
+            c.setUserOrderId(null);
+
+            couponRepo.save(c);
+        }
+    }
 
 }

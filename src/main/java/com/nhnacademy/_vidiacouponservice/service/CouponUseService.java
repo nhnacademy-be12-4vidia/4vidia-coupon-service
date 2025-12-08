@@ -58,17 +58,4 @@ public class CouponUseService {
         }
     }
 
-    @Transactional
-    public void rollbackCoupons(Long orderId) {
-
-        List<Coupon> usedList = couponRepo.findAllByUserOrderId(orderId);
-
-        for (Coupon c : usedList) {
-            c.setStatus(CouponStatus.UNUSED);
-            c.setUsedAt(null);
-            c.setUserOrderId(null);
-            couponRepo.save(c);
-        }
-    }
-
 }
