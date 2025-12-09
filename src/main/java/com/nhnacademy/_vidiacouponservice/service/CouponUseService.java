@@ -9,12 +9,14 @@ import com.nhnacademy._vidiacouponservice.exception.CouponNotHoldException;
 import com.nhnacademy._vidiacouponservice.repository.CouponRepository;
 import com.nhnacademy._vidiacouponservice.repository.UserCouponRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CouponUseService {
@@ -24,6 +26,9 @@ public class CouponUseService {
 
     @Transactional
     public void useCoupons(Long userId, CouponUseRequest req) {
+
+        log.error("🔥 CouponUseService.useCoupons START orderId={}, coupons={}",
+                req.orderId(), req.couponIds());
 
         Long orderId = req.orderId();
 
@@ -48,6 +53,9 @@ public class CouponUseService {
                 couponRepo.save(coupon);
                 throw new CouponExpireException(couponId);
             }
+
+            log.error("💾 쿠폰 사용 처리 → couponId={}, orderId={}", couponId, orderId);
+
 
             // 5) 쿠폰 사용 처리
             coupon.setUsedAt(LocalDateTime.now());

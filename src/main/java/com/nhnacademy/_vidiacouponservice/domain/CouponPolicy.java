@@ -126,24 +126,4 @@ public class CouponPolicy {
     }
 
 
-    //service용
-    public void update(CouponPolicyUpdateRequest dto){
-        this.policyName = dto.policyName();
-        this.policyType = dto.policyType();
-        this.discountType = dto.discountType();
-        this.discountValue = dto.discountValue();
-        this.discountTargetType = dto.discountTargetType();
-        this.categoryId = dto.categoryId();
-        this.bookId = dto.bookId();
-        this.validityType = dto.validityType();
-        this.validDays = dto.validDays();
-        this.startDate = dto.startDate();
-        this.endDate = dto.endDate();
-        this.limitedQuantity = dto.limitedQuantity();
-        this.minOrderAmount = dto.minOrderAmount();
-        this.maxDiscountAmount = dto.maxDiscountAmount();
-        this.isActivation = dto.isActivation();
-    }
-
-
 }
