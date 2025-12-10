@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -48,13 +49,9 @@ public class CouponIssueConsumer {
         CouponPolicy policy = policyRepo.findById(msg.policyId())
                 .orElseThrow(() -> new IllegalArgumentException("정책 없음"));
 
-        Coupon coupon = new Coupon();
-        coupon.setCouponPolicy(policy);
-        coupon.setIssuedAt(msg.issuedAt());
-        coupon.setExpireAt(msg.expireAt());
-        coupon.setStatus(CouponStatus.UNUSED);
-
+        Coupon coupon = Coupon.issue(policy, msg.issuedAt(), msg.expireAt());
         couponRepo.save(coupon);
+
 
         // user_coupon 생성
         userCouponRepo.save(new UserCoupon(msg.userId(), coupon));
@@ -85,14 +82,9 @@ public class CouponIssueConsumer {
         CouponPolicy policy = policyRepo.findById(msg.policyId())
                 .orElseThrow(() -> new IllegalArgumentException("정책 없음"));
 
-        Coupon coupon = new Coupon();
-        coupon.setCouponPolicy(policy);
-        coupon.setIssuedAt(msg.issuedAt());
-        coupon.setExpireAt(msg.expireAt());
-        coupon.setStatus(CouponStatus.UNUSED);
-
+        Coupon coupon = Coupon.issue(policy, msg.issuedAt(), msg.expireAt());
         couponRepo.save(coupon);
-        userCouponRepo.save(new UserCoupon(msg.userId(), coupon));
+
 
         try {
             // 이미 user_coupon이 존재하면 UNIQUE 에러 발생 → catch로 가게 됨
@@ -105,10 +97,10 @@ public class CouponIssueConsumer {
     }
 
     // ----- 롤백 처리 -----
-    @RabbitListener(queues = "coupon4.rollback.queue",
-            containerFactory = "rabbitListenerContainerFactory")
+    @RabbitListener(queues = "coupon4.rollback.queue", containerFactory = "rabbitListenerContainerFactory")
     @Transactional
-    public void rollback(Long orderId) {
+    public void rollback(String orderIdStr) {
+        Long orderId = Long.valueOf(orderIdStr);
         log.error("🔥🔥 ROLLBACK 메시지 받음 orderId={}", orderId);
         List<Coupon> usedCoupons = couponRepo.findAllByUserOrderId(orderId);
 

@@ -42,4 +42,15 @@ public class Coupon {
     @Column(name = "user_order_id")
     private Long userOrderId;
 
+    public static Coupon issue(CouponPolicy policy,
+                               LocalDateTime issuedAt,
+                               LocalDateTime expireAt) {
+        Coupon c = new Coupon();
+        c.couponPolicy = policy;
+        c.issuedAt = issuedAt;
+        c.expireAt = expireAt;
+        c.status = CouponStatus.UNUSED;
+        return c;
+    }
+
 }

@@ -44,11 +44,11 @@ public class CouponIssueProducer {
         );
     }
 
-    public void sendRollback(Long orderId) {
+    public void sendRollBack(Long orderId) {
         rabbit.convertAndSend(
                 RabbitMQConfig.EXCHANGE,
                 RabbitMQConfig.ROLLBACK_ROUTING_KEY,
-                orderId
+                String.valueOf(orderId)
         );
     }
 }
