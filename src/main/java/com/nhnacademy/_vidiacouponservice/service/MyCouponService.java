@@ -58,7 +58,7 @@ public class MyCouponService {
 
         int total = req.amount();
         int discountAmount = 0;
-        int discountPrice = total;
+        int discountPrice = 0;
 
         // 상태 체크
         if (c.getStatus() != CouponStatus.UNUSED)
@@ -84,8 +84,8 @@ public class MyCouponService {
             return fail(c, p, discountAmount, discountPrice, "해당 도서 전용 쿠폰입니다.");
 
         // 할인 계산
-        discountAmount = calcDiscount(total, p);
-        discountPrice = Math.max(total - discountAmount, 0);
+        discountAmount = p.getDiscountValue();
+        discountPrice = calcDiscount(total, p);
 
         return new OrderPageCouponResponse(
                 c.getCouponId(),
