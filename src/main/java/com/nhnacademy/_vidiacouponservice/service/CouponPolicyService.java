@@ -2,6 +2,7 @@ package com.nhnacademy._vidiacouponservice.service;
 
 import com.nhnacademy._vidiacouponservice.config.RedisKeys;
 import com.nhnacademy._vidiacouponservice.domain.CouponPolicy;
+import com.nhnacademy._vidiacouponservice.domain.common.DiscountType;
 import com.nhnacademy._vidiacouponservice.domain.common.ValidityType;
 import com.nhnacademy._vidiacouponservice.domain.dto.request.CouponPolicyCreateRequest;
 import com.nhnacademy._vidiacouponservice.domain.dto.request.CouponPolicyUpdateRequest;
@@ -27,8 +28,12 @@ public class CouponPolicyService {
                 req.validityType(),
                 req.validDays(),
                 req.startDate(),
-                req.endDate()
+                req.endDate(),
+                req.discountType(),
+                req.discountValue(),
+                req.maxDiscountAmount()
         );
+
 
         CouponPolicy policy = CouponPolicy.create(req);
         CouponPolicy saved = policyRepo.save(policy);
@@ -70,34 +75,52 @@ public class CouponPolicyService {
             ValidityType validityType,
             Integer validDays,
             LocalDateTime startDate,
-            LocalDateTime endDate
+            LocalDateTime endDate,
+            DiscountType discountType,
+            Integer discountValue,
+            Integer maxDiscountAmount
     ) {
 
+        // -------------------------
+        // 유효기간(Relative / Absolute) 검증
+        // -------------------------
         if (validityType == ValidityType.RELATIVE) {
-
-            // 1) validDays 필수
             if (validDays == null || validDays <= 0) {
                 throw new IllegalArgumentException("RELATIVE 정책은 validDays가 필수입니다.");
             }
-
-            // 2) ABSOLUTE 값 들어오면 안 됨
             if (startDate != null || endDate != null) {
                 throw new IllegalArgumentException("RELATIVE 정책에서는 startDate/endDate를 설정할 수 없습니다.");
             }
 
         } else if (validityType == ValidityType.ABSOLUTE) {
-
-            // 1) start/endDate 필수
             if (startDate == null || endDate == null) {
-                throw new IllegalArgumentException("ABSOLUTE 정책은 startDate와 endDate가 모두 필요합니다.");
+                throw new IllegalArgumentException("ABSOLUTE 정책은 startDate와 endDate가 필요합니다.");
             }
-
-            // 2) RELATIVE 값 들어오면 안 됨
             if (validDays != null) {
                 throw new IllegalArgumentException("ABSOLUTE 정책에서는 validDays를 설정할 수 없습니다.");
             }
         }
+
+        // -------------------------
+        // 할인 타입에 따른 필수 값 검증
+        // -------------------------
+        if (discountType == DiscountType.RATE) {
+            if (maxDiscountAmount == null || maxDiscountAmount <= 0) {
+                throw new IllegalArgumentException("RATE 할인은 maxDiscountAmount(최대 할인 금액)가 필수입니다.");
+            }
+
+            if (discountValue == null || discountValue <= 0 || discountValue > 100) {
+                throw new IllegalArgumentException("RATE 할인은 1~100 사이의 discountValue(%)가 필요합니다.");
+            }
+
+        } else if (discountType == DiscountType.PRICE) {
+            if (discountValue == null || discountValue <= 0) {
+                throw new IllegalArgumentException("PRICE 할인은 discountValue(금액)가 필수입니다.");
+            }
+            // PRICE의 경우 maxDiscountAmount는 필요 없음
+        }
     }
+
 
 
     public List<CouponPolicy> findAllActive() {

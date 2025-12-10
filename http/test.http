@@ -111,8 +111,8 @@ Content-Type: application/json
 
 
 ### 2-1. 선착순 쿠폰 발급 (재고 있는 정책)
-POST http://localhost:8085/coupons/11/issue
-X-User-Id: 10
+POST http://localhost:8085/coupons/15/issue
+X-User-Id: 55
 Content-Type: application/json
 
 {}
@@ -179,20 +179,20 @@ POST http://localhost:8085/policies
 Content-Type: application/json
 
 {
-  "policyName": "70퍼 이벤트 쿠폰",
+  "policyName": "예정림 쿠폰",
   "policyType": "EVENT",
   "discountType": "RATE",
   "discountTargetType": "ALL",
-  "discountValue": 70,
+  "discountValue": 15,
   "categoryId": null,
   "bookId": null,
-  "validityType": "ABSOLUTE",
-  "validDays": null,
-  "startDate": "2025-12-05T00:00:00",
-  "endDate": "2025-12-31T23:59:59",
-  "limitedQuantity": 100,
-  "minOrderAmount": 10000,
-  "maxDiscountAmount": 3000,
+  "validityType": "RELATIVE",
+  "validDays": 30,
+  "startDate": null,
+  "endDate": null,
+  "limitedQuantity": 10,
+  "minOrderAmount": 0,
+  "maxDiscountAmount": 0,
   "isActivation": true
 }
 

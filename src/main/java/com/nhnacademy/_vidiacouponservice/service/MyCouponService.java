@@ -90,6 +90,7 @@ public class MyCouponService {
         return new OrderPageCouponResponse(
                 c.getCouponId(),
                 p.getPolicyName(),
+                p.getMaxDiscountAmount(),
                 p.getDiscountType().name(),
                 discountAmount,
                 discountPrice,
@@ -119,6 +120,7 @@ public class MyCouponService {
         return new OrderPageCouponResponse(
                 c.getCouponId(),
                 p.getPolicyName(),
+                p.getMaxDiscountAmount(),
                 p.getDiscountType().name(),
                 discountAmount,
                 discountPrice,
