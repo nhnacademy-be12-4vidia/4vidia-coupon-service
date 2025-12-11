@@ -13,7 +13,7 @@ public record CouponPolicyCreateRequest(
         DiscountType discountType,
         DiscountTargetType discountTargetType,
         Integer discountValue,
-        Long categoryId,
+        String categoryKdcId,
         Long bookId,
         ValidityType validityType,
         Integer validDays,

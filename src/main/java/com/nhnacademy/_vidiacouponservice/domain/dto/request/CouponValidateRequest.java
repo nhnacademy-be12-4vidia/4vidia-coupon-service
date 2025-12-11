@@ -6,5 +6,5 @@ public record CouponValidateRequest(
         Long couponId,
         int amount,
         List<Long> bookIds,
-        List<Long> categoryIds
+        List<String> categoryKdcIds
 ) {}

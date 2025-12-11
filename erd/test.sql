@@ -14,7 +14,7 @@ CREATE TABLE coupon_policy (
                                discount_value     INT          NOT NULL COMMENT '할인값',
 
                                discount_target_type TINYINT    NOT NULL COMMENT '할인적용대상 (0=ALL,1=CATEGORY,2=BOOK)',
-                               category_id        BIGINT       NULL COMMENT '카테고리ID (CATEGORY일 때만 사용)',
+                               category_kdc_id    VARCHAR(3)   NULL COMMENT '카테고리코드 (CATEGORY일 때만 사용)',
                                book_id            BIGINT       NULL COMMENT '북ID (BOOK일 때만 사용)',
 
                                validity_type      TINYINT      NOT NULL COMMENT '유효기간 타입 (0=RELATIVE,1=ABSOLUTE)',

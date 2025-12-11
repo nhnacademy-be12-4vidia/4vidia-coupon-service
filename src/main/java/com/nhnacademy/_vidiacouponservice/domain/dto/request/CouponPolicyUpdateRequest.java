@@ -10,8 +10,6 @@ public record CouponPolicyUpdateRequest(
         DiscountType discountType,
         Integer discountValue,
         DiscountTargetType discountTargetType,
-        Long categoryId,
-        Long bookId,
         Integer minOrderAmount,
         Integer maxDiscountAmount
 ) {}

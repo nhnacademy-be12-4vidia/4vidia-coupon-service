@@ -41,6 +41,7 @@ public class CouponIssueConsumer {
     private final CouponPolicyRepository policyRepo;
     private final RedisTemplate<String, String> redis;
 
+    // 재고에 제한이 있는
     @RabbitListener(queues = "coupon4.issue.queue",
             containerFactory = "rabbitListenerContainerFactory")
     @Transactional

@@ -14,7 +14,7 @@ public record CouponPolicyResponse(
         DiscountType discountType,
         Integer discountValue,
         DiscountTargetType discountTargetType,
-        Long categoryId,
+        String categoryKdcId,
         Long bookId,
         ValidityType validityType,
         Integer validDays,

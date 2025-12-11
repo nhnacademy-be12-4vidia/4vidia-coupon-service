@@ -12,7 +12,7 @@ public record MyCouponResponse(
         Integer discountValue,
         Integer maxDiscountAmount,
         String targetType,
-        Long categoryId,
+        String categoryKdcId,
         Long bookId,
         LocalDateTime issuedAt,
         LocalDateTime expireAt,

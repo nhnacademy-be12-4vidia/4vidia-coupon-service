@@ -4,6 +4,8 @@ import com.nhnacademy._vidiacouponservice.domain.Coupon;
 import com.nhnacademy._vidiacouponservice.domain.CouponPolicy;
 import com.nhnacademy._vidiacouponservice.domain.UserCoupon;
 import com.nhnacademy._vidiacouponservice.domain.common.CouponStatus;
+import com.nhnacademy._vidiacouponservice.domain.common.DiscountTargetType;
+import com.nhnacademy._vidiacouponservice.domain.common.KdcCategory;
 import com.nhnacademy._vidiacouponservice.domain.dto.request.CouponValidateRequest;
 import com.nhnacademy._vidiacouponservice.domain.dto.response.MyCouponResponse;
 import com.nhnacademy._vidiacouponservice.domain.dto.response.OrderPageCouponResponse;
@@ -33,7 +35,7 @@ public class MyCouponService {
                             p.getDiscountValue(),
                             p.getMaxDiscountAmount(),
                             p.getDiscountTargetType().name(),
-                            p.getCategoryId(),
+                            p.getCategoryKdcId(),
                             p.getBookId(),
                             c.getIssuedAt(),
                             c.getExpireAt(),
@@ -74,12 +76,22 @@ public class MyCouponService {
                     "최소 주문 금액 " + p.getMinOrderAmount() + "원 이상에서 사용 가능");
 
         // CATEGORY 쿠폰
-        if (p.getDiscountTargetType().name().equals("CATEGORY") &&
-                !req.categoryIds().contains(p.getCategoryId()))
-            return fail(c, p, discountAmount, discountPrice, "해당 카테고리 전용 쿠폰입니다.");
+        if (p.getDiscountTargetType() == DiscountTargetType.CATEGORY) {
+
+            String requiredCode = KdcCategory.fromKdcId(p.getCategoryKdcId()).getCode();
+
+            boolean matched = req.categoryKdcIds().stream()
+                    .anyMatch(kdc -> {
+                        String bookCode = KdcCategory.fromKdcId(kdc).getCode();
+                        return bookCode.equals(requiredCode);
+                    });
+
+            if (!matched)
+                return fail(c, p, discountAmount, discountPrice, "해당 카테고리 전용 쿠폰입니다.");
+        }
 
         // BOOK 쿠폰
-        if (p.getDiscountTargetType().name().equals("BOOK") &&
+        if (p.getDiscountTargetType() == DiscountTargetType.BOOK &&
                 !req.bookIds().contains(p.getBookId()))
             return fail(c, p, discountAmount, discountPrice, "해당 도서 전용 쿠폰입니다.");
 

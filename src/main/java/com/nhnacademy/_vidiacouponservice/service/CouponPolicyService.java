@@ -2,6 +2,7 @@ package com.nhnacademy._vidiacouponservice.service;
 
 import com.nhnacademy._vidiacouponservice.config.RedisKeys;
 import com.nhnacademy._vidiacouponservice.domain.CouponPolicy;
+import com.nhnacademy._vidiacouponservice.domain.common.DiscountTargetType;
 import com.nhnacademy._vidiacouponservice.domain.common.DiscountType;
 import com.nhnacademy._vidiacouponservice.domain.common.ValidityType;
 import com.nhnacademy._vidiacouponservice.domain.dto.request.CouponPolicyCreateRequest;
@@ -31,7 +32,10 @@ public class CouponPolicyService {
                 req.endDate(),
                 req.discountType(),
                 req.discountValue(),
-                req.maxDiscountAmount()
+                req.maxDiscountAmount(),
+                req.discountTargetType(),
+                req.categoryKdcId(),
+                req.bookId()
         );
 
 
@@ -61,8 +65,6 @@ public class CouponPolicyService {
         policy.setDiscountType(req.discountType());
         policy.setDiscountValue(req.discountValue());
         policy.setDiscountTargetType(req.discountTargetType());
-        policy.setCategoryId(req.categoryId());
-        policy.setBookId(req.bookId());
         policy.setMinOrderAmount(req.minOrderAmount());
         policy.setMaxDiscountAmount(req.maxDiscountAmount());
 
@@ -78,7 +80,10 @@ public class CouponPolicyService {
             LocalDateTime endDate,
             DiscountType discountType,
             Integer discountValue,
-            Integer maxDiscountAmount
+            Integer maxDiscountAmount,
+            DiscountTargetType discountTargetType,
+            String categoryKdcId,
+            Long bookId
     ) {
 
         // -------------------------
@@ -119,6 +124,26 @@ public class CouponPolicyService {
             }
             // PRICE의 경우 maxDiscountAmount는 필요 없음
         }
+
+        // -------------------------
+        // CATEGORY 쿠폰일 때 필수값 체크
+        // -------------------------
+        if (discountTargetType == DiscountTargetType.CATEGORY) {
+            if (categoryKdcId == null || categoryKdcId.isBlank()) {
+                throw new IllegalArgumentException("CATEGORY 쿠폰은 categoryKdcId가 필수입니다.");
+            }
+        }
+
+        // -------------------------
+        // BOOK 쿠폰일 때 필수값 체크
+        // -------------------------
+        if (discountTargetType == DiscountTargetType.BOOK) {
+            if (bookId == null || bookId <= 0) {
+                throw new IllegalArgumentException("BOOK 쿠폰은 bookId가 필수입니다.");
+            }
+        }
+
+
     }
 
 

@@ -10,7 +10,6 @@ import com.nhnacademy._vidiacouponservice.domain.converter.DiscountTypeConverter
 import com.nhnacademy._vidiacouponservice.domain.converter.PolicyTypeConverter;
 import com.nhnacademy._vidiacouponservice.domain.converter.ValidityTypeConverter;
 import com.nhnacademy._vidiacouponservice.domain.dto.request.CouponPolicyCreateRequest;
-import com.nhnacademy._vidiacouponservice.domain.dto.request.CouponPolicyUpdateRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -49,7 +48,10 @@ public class CouponPolicy {
     @Column(name = "discount_target_type",  nullable = false)
     private DiscountTargetType discountTargetType;
 
-    private Long categoryId;
+    @Column(name = "category_kdc_id")
+    private String categoryKdcId;
+
+    @Column(name = "book_id")
     private Long bookId;
 
     @Convert(converter = ValidityTypeConverter.class)
@@ -110,7 +112,7 @@ public class CouponPolicy {
         p.discountType = dto.discountType();
         p.discountValue = dto.discountValue();
         p.discountTargetType = dto.discountTargetType();
-        p.categoryId = dto.categoryId();
+        p.categoryKdcId = dto.categoryKdcId();
         p.bookId = dto.bookId();
         p.validityType = dto.validityType();
         p.validDays = dto.validDays();
