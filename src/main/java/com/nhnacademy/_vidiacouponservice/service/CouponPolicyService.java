@@ -157,18 +157,14 @@ public class CouponPolicyService {
                 .orElseThrow(() -> new PolicyNotFoundException(policyId));
     }
 
-    public void activate(Long id) {
-        CouponPolicy p = policyRepo.findById(id)
-                .orElseThrow(() -> new PolicyNotFoundException(id));
-        p.setIsActivation(true);
-        policyRepo.save(p);
+
+    public void toggleActivation(Long policyId) {
+        CouponPolicy policy = policyRepo.findById(policyId)
+                .orElseThrow(() -> new PolicyNotFoundException(policyId));
+
+        policy.setIsActivation(!policy.getIsActivation());
+        policyRepo.save(policy);
     }
 
-    public void deactivate(Long id) {
-        CouponPolicy p = policyRepo.findById(id)
-                .orElseThrow(() -> new PolicyNotFoundException(id));
-        p.setIsActivation(false);
-        policyRepo.save(p);
-    }
 
 }

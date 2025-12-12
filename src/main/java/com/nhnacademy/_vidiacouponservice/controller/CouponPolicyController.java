@@ -40,14 +40,10 @@ public class CouponPolicyController {
         return policyService.find(policyId);
     }
 
-    @PatchMapping("/{policyId}/activate")
-    public void activate(@PathVariable Long policyId) {
-        policyService.activate(policyId);
+    @PatchMapping("/{policyId}/toggle")
+    public void toggleActivation(@PathVariable Long policyId) {
+        policyService.toggleActivation(policyId);
     }
 
-    @PatchMapping("/{policyId}/deactivate")
-    public void deactivate(@PathVariable Long policyId) {
-        policyService.deactivate(policyId);
-    }
 
 }
