@@ -36,28 +36,6 @@ GET http://localhost:8085/policies
 
 ###
 
-### 1-4. 정책 수정
-PUT http://localhost:8085/policies/1
-Content-Type: application/json
-
-{
-  "policyName": "수정된 이벤트 쿠폰",
-  "policyType": "EVENT",
-  "discountType": "RATE",
-  "discountTargetType": "ALL",
-  "discountValue": 15,
-  "categoryId": null,
-  "bookId": null,
-  "validityType": "RELATIVE",
-  "validDays": 7,
-  "startDate": null,
-  "endDate": null,
-  "limitedQuantity": 300,
-  "minOrderAmount": 5000,
-  "maxDiscountAmount": 5000,
-  "isActivation": true
-}
-
 ###
 
 ### 1-5. 정책 비활성화(삭제 대용)

@@ -6,7 +6,6 @@ import com.nhnacademy._vidiacouponservice.domain.common.DiscountTargetType;
 import com.nhnacademy._vidiacouponservice.domain.common.DiscountType;
 import com.nhnacademy._vidiacouponservice.domain.common.ValidityType;
 import com.nhnacademy._vidiacouponservice.domain.dto.request.CouponPolicyCreateRequest;
-import com.nhnacademy._vidiacouponservice.domain.dto.request.CouponPolicyUpdateRequest;
 import com.nhnacademy._vidiacouponservice.exception.PolicyNotFoundException;
 import com.nhnacademy._vidiacouponservice.repository.CouponPolicyRepository;
 import lombok.RequiredArgsConstructor;
@@ -54,30 +53,6 @@ public class CouponPolicyService {
 
         return saved;
     }
-
-
-    public CouponPolicy update(Long policyId, CouponPolicyUpdateRequest req) {
-        CouponPolicy policy = policyRepo.findById(policyId)
-                .orElseThrow(() -> new PolicyNotFoundException(policyId));
-
-        // 🔒 할인 타입은 기존 정책 기준
-        DiscountType discountType = policy.getDiscountType();
-
-        // 🔥 수정용 검증 추가
-        validateUpdateRequest(
-                discountType,
-                req.discountValue(),
-                req.maxDiscountAmount()
-        );
-
-        policy.setPolicyName(req.policyName());
-        policy.setDiscountValue(req.discountValue());
-        policy.setMinOrderAmount(req.minOrderAmount());
-        policy.setMaxDiscountAmount(req.maxDiscountAmount());
-
-        return policyRepo.save(policy);
-    }
-
 
 
 
@@ -153,29 +128,6 @@ public class CouponPolicyService {
 
 
     }
-
-    private void validateUpdateRequest(
-            DiscountType discountType,
-            Integer discountValue,
-            Integer maxDiscountAmount
-    ) {
-        if (discountType == DiscountType.RATE) {
-            if (discountValue == null || discountValue <= 0 || discountValue > 100) {
-                throw new IllegalArgumentException("RATE 할인은 1~100 사이여야 합니다.");
-            }
-            if (maxDiscountAmount == null || maxDiscountAmount <= 0) {
-                throw new IllegalArgumentException("RATE 할인은 최대 할인 금액이 필수입니다.");
-            }
-        }
-
-        if (discountType == DiscountType.PRICE) {
-            if (discountValue == null || discountValue <= 0) {
-                throw new IllegalArgumentException("PRICE 할인은 할인 금액이 0보다 커야 합니다.");
-            }
-            // PRICE는 maxDiscountAmount 의미 없음 → 0 or null 허용
-        }
-    }
-
 
 
 

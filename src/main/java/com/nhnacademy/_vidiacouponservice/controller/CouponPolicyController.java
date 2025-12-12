@@ -3,7 +3,6 @@ package com.nhnacademy._vidiacouponservice.controller;
 
 import com.nhnacademy._vidiacouponservice.domain.CouponPolicy;
 import com.nhnacademy._vidiacouponservice.domain.dto.request.CouponPolicyCreateRequest;
-import com.nhnacademy._vidiacouponservice.domain.dto.request.CouponPolicyUpdateRequest;
 import com.nhnacademy._vidiacouponservice.service.CouponPolicyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -22,12 +21,6 @@ public class CouponPolicyController {
     @PostMapping
     public CouponPolicy create(@RequestBody CouponPolicyCreateRequest req) {
         return policyService.create(req);
-    }
-
-    @PutMapping("/{policyId}")
-    public CouponPolicy update(@PathVariable Long policyId,
-                               @RequestBody CouponPolicyUpdateRequest req) {
-        return policyService.update(policyId, req);
     }
 
     @GetMapping
