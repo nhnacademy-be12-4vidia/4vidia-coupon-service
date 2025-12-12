@@ -45,5 +45,11 @@ public class CouponPolicyController {
         policyService.toggleActivation(policyId);
     }
 
+    @GetMapping("/all")
+    public List<CouponPolicy> findAll() {
+        return policyService.findAll(); // 활성/비활성 모두
+    }
+
+
 
 }

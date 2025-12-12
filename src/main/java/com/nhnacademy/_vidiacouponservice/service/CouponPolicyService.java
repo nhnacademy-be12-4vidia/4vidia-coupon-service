@@ -60,16 +60,24 @@ public class CouponPolicyService {
         CouponPolicy policy = policyRepo.findById(policyId)
                 .orElseThrow(() -> new PolicyNotFoundException(policyId));
 
-        // 수정 가능한 값만 변경
+        // 🔒 할인 타입은 기존 정책 기준
+        DiscountType discountType = policy.getDiscountType();
+
+        // 🔥 수정용 검증 추가
+        validateUpdateRequest(
+                discountType,
+                req.discountValue(),
+                req.maxDiscountAmount()
+        );
+
         policy.setPolicyName(req.policyName());
-        policy.setDiscountType(req.discountType());
         policy.setDiscountValue(req.discountValue());
-        policy.setDiscountTargetType(req.discountTargetType());
         policy.setMinOrderAmount(req.minOrderAmount());
         policy.setMaxDiscountAmount(req.maxDiscountAmount());
 
         return policyRepo.save(policy);
     }
+
 
 
 
@@ -146,6 +154,29 @@ public class CouponPolicyService {
 
     }
 
+    private void validateUpdateRequest(
+            DiscountType discountType,
+            Integer discountValue,
+            Integer maxDiscountAmount
+    ) {
+        if (discountType == DiscountType.RATE) {
+            if (discountValue == null || discountValue <= 0 || discountValue > 100) {
+                throw new IllegalArgumentException("RATE 할인은 1~100 사이여야 합니다.");
+            }
+            if (maxDiscountAmount == null || maxDiscountAmount <= 0) {
+                throw new IllegalArgumentException("RATE 할인은 최대 할인 금액이 필수입니다.");
+            }
+        }
+
+        if (discountType == DiscountType.PRICE) {
+            if (discountValue == null || discountValue <= 0) {
+                throw new IllegalArgumentException("PRICE 할인은 할인 금액이 0보다 커야 합니다.");
+            }
+            // PRICE는 maxDiscountAmount 의미 없음 → 0 or null 허용
+        }
+    }
+
+
 
 
     public List<CouponPolicy> findAllActive() {
@@ -165,6 +196,11 @@ public class CouponPolicyService {
         policy.setIsActivation(!policy.getIsActivation());
         policyRepo.save(policy);
     }
+
+    public List<CouponPolicy> findAll() {
+        return policyRepo.findAll();
+    }
+
 
 
 }

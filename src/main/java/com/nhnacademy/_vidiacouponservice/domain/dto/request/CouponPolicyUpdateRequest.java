@@ -7,7 +7,6 @@ import com.nhnacademy._vidiacouponservice.domain.common.DiscountType;
 
 public record CouponPolicyUpdateRequest(
         String policyName,
-        DiscountType discountType,
         Integer discountValue,
         DiscountTargetType discountTargetType,
         Integer minOrderAmount,
