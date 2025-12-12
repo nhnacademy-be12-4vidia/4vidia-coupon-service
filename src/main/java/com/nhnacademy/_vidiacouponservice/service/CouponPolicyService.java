@@ -9,6 +9,8 @@ import com.nhnacademy._vidiacouponservice.domain.dto.request.CouponPolicyCreateR
 import com.nhnacademy._vidiacouponservice.exception.PolicyNotFoundException;
 import com.nhnacademy._vidiacouponservice.repository.CouponPolicyRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -152,6 +154,17 @@ public class CouponPolicyService {
     public List<CouponPolicy> findAll() {
         return policyRepo.findAll();
     }
+
+
+    public Page<CouponPolicy> search(
+            String keyword,
+            String status,
+            DiscountTargetType targetType,
+            Pageable pageable
+    ) {
+        return policyRepo.search(keyword, status, targetType, pageable);
+    }
+
 
 
 

@@ -2,13 +2,17 @@ package com.nhnacademy._vidiacouponservice.controller;
 
 
 import com.nhnacademy._vidiacouponservice.domain.CouponPolicy;
+import com.nhnacademy._vidiacouponservice.domain.common.DiscountTargetType;
 import com.nhnacademy._vidiacouponservice.domain.dto.request.CouponPolicyCreateRequest;
+import com.nhnacademy._vidiacouponservice.domain.dto.response.CouponPolicyResponse;
+import com.nhnacademy._vidiacouponservice.domain.dto.response.PageResponse;
 import com.nhnacademy._vidiacouponservice.service.CouponPolicyService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 
 @RestController
@@ -43,6 +47,22 @@ public class CouponPolicyController {
         return policyService.findAll(); // 활성/비활성 모두
     }
 
+    @GetMapping("/search")
+    public PageResponse<CouponPolicyResponse> search(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String targetType,
+            Pageable pageable
+    ) {
+        DiscountTargetType type =
+                targetType == null ? null : DiscountTargetType.valueOf(targetType);
+
+        Page<CouponPolicyResponse> page =
+                policyService.search(keyword, status, type, pageable)
+                        .map(CouponPolicyResponse::from);
+
+        return PageResponse.from(page);
+    }
 
 
 }
