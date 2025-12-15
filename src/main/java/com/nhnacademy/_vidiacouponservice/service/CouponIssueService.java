@@ -2,6 +2,7 @@ package com.nhnacademy._vidiacouponservice.service;
 
 import com.nhnacademy._vidiacouponservice.config.RedisKeys;
 import com.nhnacademy._vidiacouponservice.domain.CouponPolicy;
+import com.nhnacademy._vidiacouponservice.domain.common.PolicyType;
 import com.nhnacademy._vidiacouponservice.exception.*;
 import com.nhnacademy._vidiacouponservice.producer.CouponIssueProducer;
 import com.nhnacademy._vidiacouponservice.repository.CouponPolicyRepository;
@@ -24,6 +25,14 @@ public class CouponIssueService {
 
         CouponPolicy policy = repo.findById(policyId)
                 .orElseThrow(() -> new PolicyNotFoundException(policyId));
+
+        // 🔒 이벤트/웰컴 정책 차단
+        if (policy.getPolicyType() == PolicyType.WELCOME
+                || policy.getPolicyType() == PolicyType.BIRTHDAY) {
+            throw new IllegalArgumentException(
+                    "해당 정책은 관리자 선착순 발급 대상이 아닙니다."
+            );
+        }
 
         if (!policy.getIsActivation())
             throw new PolicyInactiveException(policyId);

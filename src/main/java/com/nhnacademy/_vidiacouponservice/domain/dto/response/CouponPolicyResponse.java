@@ -3,6 +3,7 @@ package com.nhnacademy._vidiacouponservice.domain.dto.response;
 import com.nhnacademy._vidiacouponservice.domain.CouponPolicy;
 import com.nhnacademy._vidiacouponservice.domain.common.DiscountTargetType;
 import com.nhnacademy._vidiacouponservice.domain.common.DiscountType;
+import com.nhnacademy._vidiacouponservice.domain.common.PolicyType;
 import com.nhnacademy._vidiacouponservice.domain.common.ValidityType;
 
 import java.time.LocalDateTime;
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
 public record CouponPolicyResponse(
         Long policyId,
         String policyName,
+        PolicyType policyType,
         DiscountType discountType,
         Integer discountValue,
         Integer maxDiscountAmount,
@@ -36,6 +38,7 @@ public record CouponPolicyResponse(
         return new CouponPolicyResponse(
                 p.getPolicyId(),
                 p.getPolicyName(),
+                p.getPolicyType(),
                 p.getDiscountType(),
                 p.getDiscountValue(),
                 p.getMaxDiscountAmount(),

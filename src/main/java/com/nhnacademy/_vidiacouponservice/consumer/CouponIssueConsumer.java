@@ -47,31 +47,39 @@ public class CouponIssueConsumer {
     @Transactional
     public void consume(CouponIssueMessage msg) {
 
-        CouponPolicy policy = policyRepo.findById(msg.policyId())
-                .orElseThrow(() -> new IllegalArgumentException("정책 없음"));
-
-        Coupon coupon = Coupon.issue(policy, msg.issuedAt(), msg.expireAt());
-        couponRepo.save(coupon);
-
-
-        // user_coupon 생성
-        userCouponRepo.save(new UserCoupon(msg.userId(), coupon));
-
         try {
-            // 이미 user_coupon이 존재하면 UNIQUE 에러 발생 → catch로 가게 됨
+            CouponPolicy policy = policyRepo.findById(msg.policyId())
+                    .orElseThrow(() -> new IllegalArgumentException("정책 없음"));
+
+            Coupon coupon = Coupon.issue(policy, msg.issuedAt(), msg.expireAt());
+            couponRepo.save(coupon);
+
+
+            // user_coupon 생성
             userCouponRepo.save(new UserCoupon(msg.userId(), coupon));
-        } catch (DataIntegrityViolationException e) {
-            // 여기서 무시하지 않으면 MQ는 재시도 → 무한재시도 지옥 발생 가능
-            log.warn("중복 발급 메시지 감지 → 무시함 user={}, policy={}", msg.userId(), msg.policyId());
-            return;
+
+            try {
+                // 이미 user_coupon이 존재하면 UNIQUE 에러 발생 → catch로 가게 됨
+                userCouponRepo.save(new UserCoupon(msg.userId(), coupon));
+            } catch (DataIntegrityViolationException e) {
+                // 여기서 무시하지 않으면 MQ는 재시도 → 무한재시도 지옥 발생 가능
+                log.warn("중복 발급 메시지 감지 → 무시함 user={}, policy={}", msg.userId(), msg.policyId());
+                return;
+            }
+
+            // issued_quantity += 1
+            policy.increaseIssuedQuantity();
+            policyRepo.save(policy);
+
+            // Redis 발급 카운트 증가
+            redis.opsForHash().increment(RedisKeys.policyHash(msg.policyId()), "issued", 1);
+        }catch (IllegalArgumentException e) {
+            log.warn("[쿠폰 발급 스킵] {}", e.getMessage());
+            // ❗ 여기서 그냥 종료 → 메시지 소비 완료
+        } catch (Exception e) {
+            log.error("쿠폰 발급 처리 중 오류", e);
+            // 필요하면 DLQ로
         }
-
-        // issued_quantity += 1
-        policy.increaseIssuedQuantity();
-        policyRepo.save(policy);
-
-        // Redis 발급 카운트 증가
-        redis.opsForHash().increment(RedisKeys.policyHash(msg.policyId()), "issued", 1);
     }
 
     // 웰컴/생일/이벤트 (재고 무제한)

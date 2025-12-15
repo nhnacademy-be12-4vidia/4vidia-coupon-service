@@ -157,17 +157,17 @@ POST http://localhost:8085/policies
 Content-Type: application/json
 
 {
-  "policyName": "지강류 쿠폰",
+  "policyName": "종옥배 쿠폰",
   "policyType": "EVENT",
   "discountType": "PRICE",
   "discountTargetType": "ALL",
-  "discountValue": 3000,
+  "discountValue": 80000,
   "categoryKdcId": null,
   "bookId": null,
-  "validityType": "RELATIVE",
-  "validDays": 30,
-  "startDate": null,
-  "endDate": null,
+  "validityType": "ABSOLUTE",
+  "validDays": null,
+  "startDate": "2025-12-05T00:00:00",
+  "endDate": "2025-12-31T23:59:59",
   "limitedQuantity": 1000,
   "minOrderAmount": 0,
   "maxDiscountAmount": 0,
