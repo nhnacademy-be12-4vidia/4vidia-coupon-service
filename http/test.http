@@ -89,7 +89,7 @@ Content-Type: application/json
 
 
 ### 2-1. 선착순 쿠폰 발급 (재고 있는 정책)
-POST http://localhost:8085/coupons/4/issue
+POST http://localhost:8085/coupons/5/issue
 X-User-Id: 10
 Content-Type: application/json
 
@@ -157,20 +157,20 @@ POST http://localhost:8085/policies
 Content-Type: application/json
 
 {
-  "policyName": "정 쿠폰",
+  "policyName": "지강류 쿠폰",
   "policyType": "EVENT",
-  "discountType": "RATE",
+  "discountType": "PRICE",
   "discountTargetType": "ALL",
-  "discountValue": 15,
+  "discountValue": 3000,
   "categoryKdcId": null,
   "bookId": null,
   "validityType": "RELATIVE",
   "validDays": 30,
   "startDate": null,
   "endDate": null,
-  "limitedQuantity": 10,
-  "minOrderAmount": 30000,
-  "maxDiscountAmount": 15000,
+  "limitedQuantity": 1000,
+  "minOrderAmount": 0,
+  "maxDiscountAmount": 0,
   "isActivation": true
 }
 

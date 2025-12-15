@@ -18,9 +18,20 @@ public record CouponPolicyResponse(
         Integer validDays,
         LocalDateTime startDate,
         LocalDateTime endDate,
-        Boolean isActivation
+        Boolean isActivation,
+        String issueStatus
 ) {
     public static CouponPolicyResponse from(CouponPolicy p) {
+
+        String issueStatus;
+
+        if (p.getLimitedQuantity() == null) {
+            issueStatus = "∞"; // 무제한
+        } else {
+            int remain = p.getLimitedQuantity() - p.getIssuedQuantity();
+            issueStatus = p.getLimitedQuantity() + " / " + remain;
+        }
+
         return new CouponPolicyResponse(
                 p.getPolicyId(),
                 p.getPolicyName(),
@@ -32,7 +43,8 @@ public record CouponPolicyResponse(
                 p.getValidDays(),
                 p.getStartDate(),
                 p.getEndDate(),
-                p.getIsActivation()
+                p.getIsActivation(),
+                issueStatus
         );
     }
 }
