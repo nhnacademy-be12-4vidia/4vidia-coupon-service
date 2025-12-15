@@ -42,68 +42,82 @@ public class CouponIssueConsumer {
     private final RedisTemplate<String, String> redis;
 
     // 재고에 제한이 있는
-    @RabbitListener(queues = "coupon4.issue.queue",
-            containerFactory = "rabbitListenerContainerFactory")
+    @RabbitListener(
+            queues = "coupon4.issue.queue",
+            containerFactory = "rabbitListenerContainerFactory"
+    )
     @Transactional
     public void consume(CouponIssueMessage msg) {
 
-        try {
-            CouponPolicy policy = policyRepo.findById(msg.policyId())
-                    .orElseThrow(() -> new IllegalArgumentException("정책 없음"));
-
-            Coupon coupon = Coupon.issue(policy, msg.issuedAt(), msg.expireAt());
-            couponRepo.save(coupon);
-
-
-            // user_coupon 생성
-            userCouponRepo.save(new UserCoupon(msg.userId(), coupon));
-
-            try {
-                // 이미 user_coupon이 존재하면 UNIQUE 에러 발생 → catch로 가게 됨
-                userCouponRepo.save(new UserCoupon(msg.userId(), coupon));
-            } catch (DataIntegrityViolationException e) {
-                // 여기서 무시하지 않으면 MQ는 재시도 → 무한재시도 지옥 발생 가능
-                log.warn("중복 발급 메시지 감지 → 무시함 user={}, policy={}", msg.userId(), msg.policyId());
-                return;
-            }
-
-            // issued_quantity += 1
-            policy.increaseIssuedQuantity();
-            policyRepo.save(policy);
-
-            // Redis 발급 카운트 증가
-            redis.opsForHash().increment(RedisKeys.policyHash(msg.policyId()), "issued", 1);
-        }catch (IllegalArgumentException e) {
-            log.warn("[쿠폰 발급 스킵] {}", e.getMessage());
-            // ❗ 여기서 그냥 종료 → 메시지 소비 완료
-        } catch (Exception e) {
-            log.error("쿠폰 발급 처리 중 오류", e);
-            // 필요하면 DLQ로
+        // 정책 조회
+        CouponPolicy policy = policyRepo.findById(msg.policyId()).orElse(null);
+        if (policy == null) {
+            log.warn("⚠️ 정책 없음 → 메시지 무시 policyId={}", msg.policyId());
+            return;
         }
+
+        // 이미 발급된 유저인지 체크 (멱등성)
+        boolean alreadyIssued =
+                userCouponRepo.existsByIdUserIdAndPolicyId(msg.userId(), msg.policyId());
+
+        if (alreadyIssued) {
+            log.warn("⚠️ 중복 발급 메시지 무시 user={}, policy={}",
+                    msg.userId(), msg.policyId());
+            return;
+        }
+
+        // 쿠폰 생성
+        Coupon coupon = Coupon.issue(policy, msg.issuedAt(), msg.expireAt());
+        couponRepo.save(coupon);
+
+        // user_coupon 생성
+        userCouponRepo.save(new UserCoupon(msg.userId(), coupon));
+
+        // issued_quantity 증가
+        policy.increaseIssuedQuantity();
+        policyRepo.save(policy);
+
+        // Redis issued 증가
+        redis.opsForHash()
+                .increment(RedisKeys.policyHash(msg.policyId()), "issued", 1);
+
+        log.info("✅ 쿠폰 발급 완료 user={}, policy={}, couponId={}",
+                msg.userId(), msg.policyId(), coupon.getCouponId());
     }
 
+
     // 웰컴/생일/이벤트 (재고 무제한)
-    @RabbitListener(queues = "coupon4.event.queue",
-            containerFactory = "rabbitListenerContainerFactory")
+    @RabbitListener(
+            queues = "coupon4.event.queue",
+            containerFactory = "rabbitListenerContainerFactory"
+    )
     @Transactional
     public void consumeEvent(CouponIssueMessage msg) {
 
-        CouponPolicy policy = policyRepo.findById(msg.policyId())
-                .orElseThrow(() -> new IllegalArgumentException("정책 없음"));
+        CouponPolicy policy = policyRepo.findById(msg.policyId()).orElse(null);
+        if (policy == null) {
+            log.warn("⚠️ 정책 없음 → 이벤트 쿠폰 무시 policyId={}", msg.policyId());
+            return;
+        }
+
+        boolean alreadyIssued =
+                userCouponRepo.existsByIdUserIdAndPolicyId(msg.userId(), msg.policyId());
+
+        if (alreadyIssued) {
+            log.warn("⚠️ 이벤트 중복 발급 무시 user={}, policy={}",
+                    msg.userId(), msg.policyId());
+            return;
+        }
 
         Coupon coupon = Coupon.issue(policy, msg.issuedAt(), msg.expireAt());
         couponRepo.save(coupon);
 
+        userCouponRepo.save(new UserCoupon(msg.userId(), coupon));
 
-        try {
-            // 이미 user_coupon이 존재하면 UNIQUE 에러 발생 → catch로 가게 됨
-            userCouponRepo.save(new UserCoupon(msg.userId(), coupon));
-        } catch (DataIntegrityViolationException e) {
-            // 여기서 무시하지 않으면 MQ는 재시도 → 무한재시도 지옥 발생 가능
-            log.warn("중복 발급 메시지 감지 → 무시함 user={}, policy={}", msg.userId(), msg.policyId());
-            return;
-        }
+        log.info("✅ 이벤트 쿠폰 발급 완료 user={}, policy={}",
+                msg.userId(), msg.policyId());
     }
+
 
     /**
      * ⚠️ 정상 결제 흐름에서는 사용하지 않음
@@ -134,8 +148,6 @@ public class CouponIssueConsumer {
         } else {
             log.info("ℹ️ 롤백 대상 없음 (이미 처리됨 또는 무시) orderId={}", orderId);
         }
-
-        // ❗ 절대 예외 던지지 마라
     }
 
 

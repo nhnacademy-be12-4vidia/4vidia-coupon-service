@@ -3,6 +3,7 @@ drop table coupon;
 drop table coupon_policy;
 
 
+delete from coupon_policy where coupon_policy.coupon_policy_id = 2;
 
 -- 1. 쿠폰_정책 테이블
 CREATE TABLE coupon_policy (
