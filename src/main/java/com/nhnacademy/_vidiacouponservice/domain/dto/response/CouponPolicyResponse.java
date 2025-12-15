@@ -3,7 +3,6 @@ package com.nhnacademy._vidiacouponservice.domain.dto.response;
 import com.nhnacademy._vidiacouponservice.domain.CouponPolicy;
 import com.nhnacademy._vidiacouponservice.domain.common.DiscountTargetType;
 import com.nhnacademy._vidiacouponservice.domain.common.DiscountType;
-import com.nhnacademy._vidiacouponservice.domain.common.PolicyType;
 import com.nhnacademy._vidiacouponservice.domain.common.ValidityType;
 
 import java.time.LocalDateTime;

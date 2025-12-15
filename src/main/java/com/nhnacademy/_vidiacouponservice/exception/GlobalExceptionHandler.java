@@ -60,6 +60,13 @@ public class GlobalExceptionHandler {
         return build(ErrorCode.COUPON_EXPIRED, ex);
     }
 
+    // 검증 실패
+    @ExceptionHandler(CouponInvalidException.class)
+    public ResponseEntity<ErrorResponse> handleCouponInvalid(CouponInvalidException ex) {
+        return build(ErrorCode.COUPON_INVALID, ex);
+    }
+
+
 
     // ---- 기본 IllegalArgument ----
     @ExceptionHandler(IllegalArgumentException.class)

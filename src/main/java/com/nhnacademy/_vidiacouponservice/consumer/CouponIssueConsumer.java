@@ -97,22 +97,33 @@ public class CouponIssueConsumer {
         }
     }
 
+    /**
+     * ⚠️ 정상 결제 흐름에서는 사용하지 않음
+     * 결제 성공 이후 장애 발생 시 보상 트랜잭션 용도
+     */
+
     // ----- 롤백 처리 -----
-    @RabbitListener(queues = "coupon4.rollback.queue", containerFactory = "rabbitListenerContainerFactory")
+    @RabbitListener(
+            queues = "coupon4.rollback.queue",
+            containerFactory = "rabbitListenerContainerFactory"
+    )
     @Transactional
     public void rollback(String orderIdStr) {
+
         Long orderId = Long.valueOf(orderIdStr);
-        log.error("🔥🔥 ROLLBACK 메시지 받음 orderId={}", orderId);
-        List<Coupon> usedCoupons = couponRepo.findAllByUserOrderId(orderId);
 
-        for (Coupon c : usedCoupons) {
+        log.warn("🔄 쿠폰 롤백 이벤트 수신 orderId={}", orderId);
 
-            c.setStatus(CouponStatus.UNUSED);
-            c.setUsedAt(null);
-            c.setUserOrderId(null);
+        int rolledBackCount = couponRepo.rollbackCouponsByOrderId(orderId);
 
-            couponRepo.save(c);
+        if (rolledBackCount > 0) {
+            log.info("✅ 쿠폰 롤백 완료 orderId={}, count={}", orderId, rolledBackCount);
+        } else {
+            log.info("ℹ️ 롤백 대상 없음 (이미 처리됨 또는 무시) orderId={}", orderId);
         }
+
+        // ❗ 절대 예외 던지지 마라
     }
+
 
 }

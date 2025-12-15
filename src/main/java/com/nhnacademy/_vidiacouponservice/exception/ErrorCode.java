@@ -23,6 +23,7 @@ public enum ErrorCode {
     COUPON_ALREADY_USED(HttpStatus.CONFLICT, "이미 사용된 쿠폰입니다."),
     COUPON_EXPIRED(HttpStatus.GONE, "만료된 쿠폰입니다."),
     COUPON_NOT_HOLD(HttpStatus.NOT_FOUND, "유저가 쿠폰을 가지고 있지 않습니다."),
+    COUPON_INVALID(HttpStatus.BAD_REQUEST, "쿠폰 검증 실패"),
 
     // ---- 9xxx 시스템 ----
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 오류가 발생했습니다.");
