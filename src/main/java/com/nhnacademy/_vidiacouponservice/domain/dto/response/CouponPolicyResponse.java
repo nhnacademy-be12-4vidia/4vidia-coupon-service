@@ -26,10 +26,11 @@ public record CouponPolicyResponse(
         String issueStatus;
 
         if (p.getLimitedQuantity() == null) {
-            issueStatus = "∞"; // 무제한
+            issueStatus = "무제한"; // 무제한
         } else {
-            int remain = p.getLimitedQuantity() - p.getIssuedQuantity();
-            issueStatus = p.getLimitedQuantity() + " / " + remain;
+            int total = p.getLimitedQuantity();
+            int issued = p.getIssuedQuantity(); // or Redis issued
+            issueStatus = total + " / " + (total - issued);
         }
 
         return new CouponPolicyResponse(
