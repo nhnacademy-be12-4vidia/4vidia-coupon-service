@@ -38,12 +38,18 @@ public class CouponUseService {
 
         // 2. 조건부 UPDATE (핵심)
         int updated = couponRepo.useCouponIfUnusedAndNotExpired(
-                couponId, orderId, LocalDateTime.now(), LocalDateTime.now()
+                couponId,
+                orderId,
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                CouponStatus.UNUSED,
+                CouponStatus.USED
         );
 
         if (updated == 1) {
-            return; // 성공
-        }
+            return;
+        } //성공
+
 
         // 2️⃣ 실패 시 원인 판별
 

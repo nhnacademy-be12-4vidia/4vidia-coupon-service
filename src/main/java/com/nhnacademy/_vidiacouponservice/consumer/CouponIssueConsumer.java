@@ -114,7 +114,12 @@ public class CouponIssueConsumer {
 
         log.warn("🔄 쿠폰 롤백 이벤트 수신 orderId={}", orderId);
 
-        int rolledBackCount = couponRepo.rollbackCouponsByOrderId(orderId);
+        int rolledBackCount = couponRepo.rollbackCouponsByOrderId(
+                orderId,
+                CouponStatus.USED,
+                CouponStatus.UNUSED
+        );
+
 
         if (rolledBackCount > 0) {
             log.info("✅ 쿠폰 롤백 완료 orderId={}, count={}", orderId, rolledBackCount);

@@ -17,19 +17,22 @@ public interface CouponRepository extends JpaRepository<Coupon, Long> {
     @Modifying
     @Query("""
     UPDATE Coupon c
-       SET c.status = 'USED',
+       SET c.status = :usedStatus,
            c.usedAt = :usedAt,
            c.userOrderId = :orderId
      WHERE c.couponId = :couponId
-       AND c.status = 'UNUSED'
+       AND c.status = :unusedStatus
        AND c.expireAt > :now
-""")
+    """)
     int useCouponIfUnusedAndNotExpired(
-            Long couponId,
-            Long orderId,
-            LocalDateTime usedAt,
-            LocalDateTime now
+            @Param("couponId") Long couponId,
+            @Param("orderId") Long orderId,
+            @Param("usedAt") LocalDateTime usedAt,
+            @Param("now") LocalDateTime now,
+            @Param("unusedStatus") CouponStatus unusedStatus,
+            @Param("usedStatus") CouponStatus usedStatus
     );
+
     
     
     
@@ -37,13 +40,17 @@ public interface CouponRepository extends JpaRepository<Coupon, Long> {
     @Modifying
     @Query("""
     UPDATE Coupon c
-       SET c.status = 'UNUSED',
+       SET c.status = :unusedStatus,
            c.usedAt = null,
            c.userOrderId = null
-     WHERE c.status = 'USED'
+     WHERE c.status = :usedStatus
        AND c.userOrderId = :orderId
-""")
-    int rollbackCouponsByOrderId(@Param("orderId") Long orderId);
+    """)
+    int rollbackCouponsByOrderId(
+            @Param("orderId") Long orderId,
+            @Param("usedStatus") CouponStatus usedStatus,
+            @Param("unusedStatus") CouponStatus unusedStatus
+    );
 
 
 
