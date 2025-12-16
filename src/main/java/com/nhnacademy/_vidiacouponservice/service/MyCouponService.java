@@ -7,7 +7,9 @@ import com.nhnacademy._vidiacouponservice.domain.common.CouponStatus;
 import com.nhnacademy._vidiacouponservice.domain.common.DiscountTargetType;
 import com.nhnacademy._vidiacouponservice.domain.common.KdcCategory;
 import com.nhnacademy._vidiacouponservice.domain.dto.request.CouponValidateRequest;
+import com.nhnacademy._vidiacouponservice.domain.dto.request.OrderCouponRequest;
 import com.nhnacademy._vidiacouponservice.domain.dto.response.MyCouponResponse;
+import com.nhnacademy._vidiacouponservice.domain.dto.response.OrderBookResponse;
 import com.nhnacademy._vidiacouponservice.domain.dto.response.OrderPageCouponResponse;
 import com.nhnacademy._vidiacouponservice.repository.UserCouponRepository;
 import lombok.RequiredArgsConstructor;
@@ -46,6 +48,28 @@ public class MyCouponService {
                 .toList();
     }
 
+    // 주문 DTO → 쿠폰 검증 DTO 변환 (새로 추가된 핵심)
+    public List<OrderPageCouponResponse> getOrderCoupons(Long userId, OrderCouponRequest req) {
+        // 1. 총 주문 금액 계산
+        int totalAmount = req.orderBookResponses().stream()
+                .mapToInt(b -> b.salePrice() * b.quantity())
+                .sum();
+        // 2. bookId 리스트
+        List<Long> bookIds = req.orderBookResponses().stream()
+                .map(OrderBookResponse::bookId)
+                .toList();
+        // 3. categoryKdc 리스트
+        List<String> categoryKdcIds = req.orderBookResponses().stream()
+                .map(OrderBookResponse::categoryKdc)
+                .toList();
+        // 4. 기존 쿠폰 검증 dto로 변환
+        CouponValidateRequest validateReq =
+                new CouponValidateRequest(totalAmount, bookIds, categoryKdcIds);
+
+        // 5. 기존 로직 재사용
+        return getOrderCoupons(userId, validateReq);
+    }
+
     // 주문 화면용 모든 쿠폰 검증
     public List<OrderPageCouponResponse> getOrderCoupons(Long userId, CouponValidateRequest req) {
         return userCouponRepo.findAllByIdUserId(userId).stream()
@@ -53,9 +77,12 @@ public class MyCouponService {
                 .toList();
     }
 
+
+
+
     private OrderPageCouponResponse validate(UserCoupon uc, CouponValidateRequest req) {
 
-        Coupon c = uc.getCoupon();
+        Coupon c = normalizeExpire(uc.getCoupon());
         CouponPolicy p = c.getCouponPolicy();
 
         int total = req.amount();
@@ -141,4 +168,15 @@ public class MyCouponService {
                 reason
         );
     }
+
+    private Coupon normalizeExpire(Coupon c) {
+        if (c.getStatus() == CouponStatus.UNUSED &&
+                c.getExpireAt().isBefore(LocalDateTime.now())) {
+
+            c.setStatus(CouponStatus.EXPIRED);
+            // 👉 여기서 save 해도 되고, 조회 전용이면 안 해도 됨
+        }
+        return c;
+    }
+
 }

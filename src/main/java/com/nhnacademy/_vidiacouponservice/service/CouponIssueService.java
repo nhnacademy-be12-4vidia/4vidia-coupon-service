@@ -29,9 +29,7 @@ public class CouponIssueService {
         // 🔒 이벤트/웰컴 정책 차단
         if (policy.getPolicyType() == PolicyType.WELCOME
                 || policy.getPolicyType() == PolicyType.BIRTHDAY) {
-            throw new IllegalArgumentException(
-                    "해당 정책은 관리자 선착순 발급 대상이 아닙니다."
-            );
+            throw new PolicyNotAdminIssuableException(policyId);
         }
 
         if (!policy.getIsActivation())
@@ -42,19 +40,11 @@ public class CouponIssueService {
         Boolean ok = redis.opsForValue().setIfAbsent(dupKey, "1");
 
         if (Boolean.FALSE.equals(ok))
-            throw new IllegalArgumentException("이미 발급 요청 처리중입니다.");
+            throw new DuplicateIssueRequestException(userId, policyId);
 
         redis.expire(dupKey, Duration.ofSeconds(60));
 
-        // 2) 재고 감소
-        String hashKey = RedisKeys.policyHash(policyId);
-        Long remain = redis.opsForHash().increment(hashKey, "stock", -1);
-
-        if (remain == null)
-            throw new PolicyStockMissingException(policyId);
-
-        if (remain < 0)
-            throw new PolicyOutOfStockException(policyId);
+        // 재고감소는 컨슈머에서
 
         // 3) 발급/만료시간 계산
         LocalDateTime issuedAt = LocalDateTime.now();

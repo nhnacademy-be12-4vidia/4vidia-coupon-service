@@ -1,6 +1,7 @@
 package com.nhnacademy._vidiacouponservice.controller;
 
 import com.nhnacademy._vidiacouponservice.domain.dto.request.CouponValidateRequest;
+import com.nhnacademy._vidiacouponservice.domain.dto.request.OrderCouponRequest;
 import com.nhnacademy._vidiacouponservice.domain.dto.response.MyCouponResponse;
 import com.nhnacademy._vidiacouponservice.domain.dto.response.OrderPageCouponResponse;
 import com.nhnacademy._vidiacouponservice.service.MyCouponService;
@@ -28,7 +29,7 @@ public class MyCouponController {
     @PostMapping("/validate")
     public List<OrderPageCouponResponse> validateCoupons(
             @RequestHeader("X-User-Id") Long userId,
-            @RequestBody CouponValidateRequest req
+            @RequestBody OrderCouponRequest req
     ) {
         return myCouponService.getOrderCoupons(userId, req);
     }

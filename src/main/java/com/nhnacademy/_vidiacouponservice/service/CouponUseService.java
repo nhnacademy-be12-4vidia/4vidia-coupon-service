@@ -59,6 +59,7 @@ public class CouponUseService {
 
         //이미 사용됨
         if (coupon.getStatus() != CouponStatus.UNUSED) {
+            coupon.setStatus(CouponStatus.EXPIRED);
             throw new CouponAlreadyUsedException(couponId);
         }
 

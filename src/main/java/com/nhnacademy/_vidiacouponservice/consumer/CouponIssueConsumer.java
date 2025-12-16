@@ -66,6 +66,21 @@ public class CouponIssueConsumer {
             return;
         }
 
+        String stockKey = RedisKeys.policyHash(msg.policyId());
+        Long remain = redis.opsForHash().increment(stockKey, "stock", -1);
+
+        if (remain == null) {
+            log.error("❌ 재고 정보 없음 policy={}", msg.policyId());
+            return;
+        }
+
+        if (remain < 0) {
+            log.warn("❌ 재고 소진 policy={}", msg.policyId());
+            // 재고 복구
+            redis.opsForHash().increment(stockKey, "stock", 1);
+            return;
+        }
+
         // 쿠폰 생성
         Coupon coupon = Coupon.issue(policy, msg.issuedAt(), msg.expireAt());
         couponRepo.save(coupon);

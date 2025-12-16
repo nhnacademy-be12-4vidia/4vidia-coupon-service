@@ -66,6 +66,19 @@ public class GlobalExceptionHandler {
         return build(ErrorCode.COUPON_INVALID, ex);
     }
 
+    // 관리자
+    @ExceptionHandler(PolicyNotAdminIssuableException.class)
+    public ResponseEntity<ErrorResponse> handleNotAdminIssuable(PolicyNotAdminIssuableException ex) {
+        return build(ErrorCode.POLICY_INVALID, ex);
+    }
+
+    // 중복발급요청중임
+    @ExceptionHandler(DuplicateIssueRequestException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateIssue(DuplicateIssueRequestException ex) {
+        return build(ErrorCode.POLICY_INVALID, ex);
+    }
+
+
 
 
     // ---- 기본 IllegalArgument ----
