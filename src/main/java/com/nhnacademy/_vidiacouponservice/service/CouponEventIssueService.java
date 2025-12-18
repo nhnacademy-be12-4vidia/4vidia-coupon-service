@@ -1,6 +1,7 @@
 package com.nhnacademy._vidiacouponservice.service;
 
 import com.nhnacademy._vidiacouponservice.config.RedisKeys;
+import com.nhnacademy._vidiacouponservice.client.UserClient;
 import com.nhnacademy._vidiacouponservice.domain.CouponPolicy;
 import com.nhnacademy._vidiacouponservice.exception.DuplicateIssueRequestException;
 import com.nhnacademy._vidiacouponservice.exception.PolicyInactiveException;
@@ -22,9 +23,12 @@ public class CouponEventIssueService {
     private final CouponPolicyRepository policyRepo;
     private final UserCouponRepository userCouponRepo;
     private final RedisTemplate<String, String> redis;
+    private final UserClient userClient;
     private final CouponIssueProducer producer;
 
     public void issueEventCoupon(Long userId, Long policyId) {
+
+        userClient.validateUser(userId);
 
         CouponPolicy policy = policyRepo.findById(policyId)
                 .orElseThrow(() -> new PolicyNotFoundException(policyId));

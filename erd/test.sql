@@ -71,7 +71,6 @@ CREATE TABLE user_coupon (
                              policy_id BIGINT NOT NULL COMMENT '정책ID (중복 발급 방지용)',
 
                              PRIMARY KEY (coupon_id, user_id),
-                             UNIQUE KEY uq_user_policy (policy_id, user_id),
 
                              CONSTRAINT fk_user_coupon_coupon
                                  FOREIGN KEY (coupon_id)

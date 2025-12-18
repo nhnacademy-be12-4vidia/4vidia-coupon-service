@@ -165,7 +165,4 @@ public class CouponPolicyService {
         return policyRepo.search(keyword, status, targetType, pageable);
     }
 
-
-
-
 }

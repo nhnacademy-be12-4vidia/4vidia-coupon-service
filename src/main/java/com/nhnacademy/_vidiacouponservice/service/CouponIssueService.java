@@ -1,6 +1,7 @@
 package com.nhnacademy._vidiacouponservice.service;
 
 import com.nhnacademy._vidiacouponservice.config.RedisKeys;
+import com.nhnacademy._vidiacouponservice.client.UserClient;
 import com.nhnacademy._vidiacouponservice.domain.CouponPolicy;
 import com.nhnacademy._vidiacouponservice.domain.common.PolicyType;
 import com.nhnacademy._vidiacouponservice.exception.*;
@@ -20,13 +21,16 @@ public class CouponIssueService {
     private final CouponPolicyRepository repo;
     private final RedisTemplate<String, String> redis;
     private final CouponIssueProducer producer;
+    private final UserClient userClient;
 
     public void issue(Long userId, Long policyId) {
+
+        userClient.validateUser(userId);
 
         CouponPolicy policy = repo.findById(policyId)
                 .orElseThrow(() -> new PolicyNotFoundException(policyId));
 
-        // 🔒 이벤트/웰컴 정책 차단
+        // 🔒 생일/웰컴 정책 차단
         if (policy.getPolicyType() == PolicyType.WELCOME
                 || policy.getPolicyType() == PolicyType.BIRTHDAY) {
             throw new PolicyNotAdminIssuableException(policyId);

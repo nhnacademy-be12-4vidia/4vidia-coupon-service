@@ -102,7 +102,6 @@ public class CouponPolicy {
     }
 
 
-
     //service용
     public static CouponPolicy create(CouponPolicyCreateRequest dto) {
         CouponPolicy p = new CouponPolicy();

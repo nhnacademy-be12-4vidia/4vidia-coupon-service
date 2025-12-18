@@ -89,7 +89,7 @@ Content-Type: application/json
 
 
 ### 2-1. 선착순 쿠폰 발급 (재고 있는 정책)
-POST http://localhost:8085/coupons/2/issue
+POST http://localhost:8085/coupons/1/issue
 X-User-Id: 14
 Content-Type: application/json
 
@@ -157,11 +157,11 @@ POST http://localhost:8085/policies
 Content-Type: application/json
 
 {
-  "policyName": "대종옥 쿠폰",
+  "policyName": "대예림 쿠폰",
   "policyType": "EVENT",
   "discountType": "PRICE",
   "discountTargetType": "ALL",
-  "discountValue": 10000,
+  "discountValue": 20000,
   "categoryKdcId": null,
   "bookId": null,
   "validityType": "ABSOLUTE",

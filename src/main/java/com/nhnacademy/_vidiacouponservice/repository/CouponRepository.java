@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface CouponRepository extends JpaRepository<Coupon, Long> {
 
@@ -61,7 +62,7 @@ public interface CouponRepository extends JpaRepository<Coupon, Long> {
     // 정책 ID 기반 쿠폰 조회
     List<Coupon> findAllByCouponPolicy_PolicyId(Long policyId);
 
-    List<Coupon> findAllByUserOrderId(Long orderId);
+    Optional<Coupon> findByUserOrderId(Long orderId);
 
     List<Coupon> findTop5000ByStatusAndExpireAtBefore(CouponStatus status, LocalDateTime now);
 }
