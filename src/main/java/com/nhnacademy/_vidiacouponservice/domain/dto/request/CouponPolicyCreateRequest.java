@@ -5,6 +5,7 @@ import com.nhnacademy._vidiacouponservice.domain.common.DiscountType;
 import com.nhnacademy._vidiacouponservice.domain.common.PolicyType;
 import com.nhnacademy._vidiacouponservice.domain.common.ValidityType;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public record CouponPolicyCreateRequest(
@@ -17,8 +18,8 @@ public record CouponPolicyCreateRequest(
         Long bookId,
         ValidityType validityType,
         Integer validDays,
-        LocalDateTime startDate,
-        LocalDateTime endDate,
+        LocalDate startDate,
+        LocalDate endDate,
         Integer limitedQuantity,
         Integer minOrderAmount,
         Integer maxDiscountAmount,

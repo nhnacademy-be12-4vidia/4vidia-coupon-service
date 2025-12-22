@@ -6,6 +6,7 @@ import com.nhnacademy._vidiacouponservice.domain.common.DiscountType;
 import com.nhnacademy._vidiacouponservice.domain.common.PolicyType;
 import com.nhnacademy._vidiacouponservice.domain.common.ValidityType;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public record CouponPolicyResponse(
@@ -18,8 +19,8 @@ public record CouponPolicyResponse(
         DiscountTargetType discountTargetType,
         ValidityType validityType,
         Integer validDays,
-        LocalDateTime startDate,
-        LocalDateTime endDate,
+        LocalDate startDate,
+        LocalDate endDate,
         Boolean isActivation,
         String issueStatus
 ) {

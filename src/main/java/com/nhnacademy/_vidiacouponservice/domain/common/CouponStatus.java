@@ -26,17 +26,4 @@ public enum CouponStatus implements CodeEnum {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid coupon status"));
     }
 
-    public boolean isUsed() {
-        return this == USED;
-    }
-
-    public boolean isExpired() {
-        return this == EXPIRED;
-    }
-
-    public boolean isUnused() {
-        return this == UNUSED;
-    }
-
-
 }

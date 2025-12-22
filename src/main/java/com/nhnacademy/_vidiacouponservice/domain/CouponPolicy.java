@@ -15,7 +15,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -35,10 +38,12 @@ public class CouponPolicy {
 
     @Convert(converter = PolicyTypeConverter.class)
     @Column(name = "policy_type", nullable = false)
+    @JdbcTypeCode(SqlTypes.TINYINT)
     private PolicyType policyType;
 
     @Convert(converter = DiscountTypeConverter.class)
     @Column(name = "discount_type", nullable = false)
+    @JdbcTypeCode(SqlTypes.TINYINT)
     private DiscountType discountType;
 
     @Column(name = "discount_value", nullable = false)
@@ -46,6 +51,7 @@ public class CouponPolicy {
 
     @Convert(converter = DiscountTargetTypeConverter.class)
     @Column(name = "discount_target_type",  nullable = false)
+    @JdbcTypeCode(SqlTypes.TINYINT)
     private DiscountTargetType discountTargetType;
 
     @Column(name = "category_kdc_id")
@@ -56,15 +62,16 @@ public class CouponPolicy {
 
     @Convert(converter = ValidityTypeConverter.class)
     @Column(name = "validity_type", nullable = false)
+    @JdbcTypeCode(SqlTypes.TINYINT)
     private ValidityType validityType;
 
     @Column(name = "valid_days")
     private Integer validDays;
 
     @Column(name = "start_date")
-    private LocalDateTime startDate;
+    private LocalDate startDate;
     @Column(name = "end_date")
-    private LocalDateTime endDate;
+    private LocalDate endDate;
 
     /**
     null이면 무제한
@@ -76,22 +83,23 @@ public class CouponPolicy {
      * 기본은 0
      */
     @Column(name = "issued_quantity",  nullable = false)
-    private Integer issuedQuantity;
+    private Integer issuedQuantity = 0;
     /**
      * 기본은 0
      */
     @Column(name = "min_order_amount",  nullable = false)
-    private Integer minOrderAmount;
+    private Integer minOrderAmount = 0;
     /**
      * 기본은 0
      */
     @Column(name = "max_discount_amount",  nullable = false)
-    private Integer maxDiscountAmount;
+    private Integer maxDiscountAmount = 0;
 
     /**
      * 기본은 1
      */
     @Column(name = "is_activation",  nullable = false)
+    @JdbcTypeCode(SqlTypes.TINYINT)
     private Boolean isActivation;
 
     /**
@@ -118,13 +126,20 @@ public class CouponPolicy {
         p.startDate = dto.startDate();
         p.endDate = dto.endDate();
         p.limitedQuantity = dto.limitedQuantity();
-        p.minOrderAmount = dto.minOrderAmount();
-        p.maxDiscountAmount = dto.maxDiscountAmount();
+
+        // 🔥 여기 핵심
+        p.minOrderAmount =
+                dto.minOrderAmount() != null ? dto.minOrderAmount() : 0;
+
+        p.maxDiscountAmount =
+                dto.maxDiscountAmount() != null ? dto.maxDiscountAmount() : 0;
+
         p.issuedQuantity = 0;
         p.isActivation = dto.isActivation() != null ? dto.isActivation() : true;
 
         return p;
     }
+
 
 
 }

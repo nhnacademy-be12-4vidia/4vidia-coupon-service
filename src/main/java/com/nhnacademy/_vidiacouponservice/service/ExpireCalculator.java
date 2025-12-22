@@ -10,6 +10,7 @@ public class ExpireCalculator {
 
     public static LocalDateTime calcExpiry(CouponPolicy policy, LocalDateTime issuedAt) {
 
+        // RELATIVE
         if (policy.getValidityType() == ValidityType.RELATIVE) {
 
             Integer days = policy.getValidDays();
@@ -17,16 +18,14 @@ public class ExpireCalculator {
                 throw new IllegalArgumentException("RELATIVE 정책은 validDays가 필수입니다.");
             }
 
-            LocalDate expireDate = issuedAt.toLocalDate().plusDays(days);
-            return expireDate.atStartOfDay();
+            return issuedAt.plusDays(days);
         }
 
-        // ABSOLUTE 정책 처리
+        // ABSOLUTE
         if (policy.getEndDate() == null) {
             throw new IllegalArgumentException("ABSOLUTE 정책은 endDate가 필수입니다.");
         }
 
-        LocalDate expireDate = policy.getEndDate().toLocalDate();
-        return expireDate.atStartOfDay();
+        return policy.getEndDate().atTime(23, 59, 59);
     }
 }

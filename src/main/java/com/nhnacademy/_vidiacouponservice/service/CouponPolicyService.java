@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -61,8 +62,8 @@ public class CouponPolicyService {
     private void validatePolicyRequest(
             ValidityType validityType,
             Integer validDays,
-            LocalDateTime startDate,
-            LocalDateTime endDate,
+            LocalDate startDate,
+            LocalDate endDate,
             DiscountType discountType,
             Integer discountValue,
             Integer maxDiscountAmount,

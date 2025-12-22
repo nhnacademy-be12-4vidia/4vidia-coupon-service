@@ -23,8 +23,8 @@ CREATE TABLE coupon_policy (
                                validity_type        TINYINT      NOT NULL COMMENT '유효기간 타입 (0=RELATIVE,1=ABSOLUTE)',
                                valid_days           INT          NULL COMMENT '상대유효기간(일)',
 
-                               start_date           DATETIME     NULL COMMENT '절대유효 시작일',
-                               end_date             DATETIME     NULL COMMENT '절대유효 종료일',
+                               start_date           DATE     NULL COMMENT '절대유효 시작일',
+                               end_date             DATE     NULL COMMENT '절대유효 종료일',
 
                                limited_quantity     INT          NULL COMMENT '한정수량 (NULL이면 무제한)',
                                issued_quantity      INT          NOT NULL DEFAULT 0 COMMENT '발급된 수량',
