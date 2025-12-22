@@ -8,7 +8,7 @@ import java.util.Arrays;
 @Getter
 @RequiredArgsConstructor
 public enum KdcCategory {
-
+    UNC("U", "미분류"),
     GENERAL("0", "총류"),
     PHILOSOPHY("1", "철학"),
     RELIGION("2", "종교"),

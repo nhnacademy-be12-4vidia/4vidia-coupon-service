@@ -2,8 +2,11 @@ package com.nhnacademy._vidiacouponservice.service;
 
 import com.nhnacademy._vidiacouponservice.domain.Coupon;
 import com.nhnacademy._vidiacouponservice.domain.CouponPolicy;
+import com.nhnacademy._vidiacouponservice.domain.UserCoupon;
 import com.nhnacademy._vidiacouponservice.domain.common.CouponStatus;
 import com.nhnacademy._vidiacouponservice.domain.dto.response.MyCouponResponse;
+import com.nhnacademy._vidiacouponservice.repository.CouponPolicyRepository;
+import com.nhnacademy._vidiacouponservice.repository.CouponRepository;
 import com.nhnacademy._vidiacouponservice.repository.UserCouponRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,10 +18,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AdminCouponService {
 
-    private final UserCouponRepository userCouponRepo;
+    private final UserCouponRepository userCouponRepository;
+    private final CouponPolicyRepository couponPolicyRepository;
 
     public List<MyCouponResponse> getUserCoupons(Long userId) {
-        return userCouponRepo.findAllByIdUserId(userId).stream()
+        return userCouponRepository.findAllByIdUserId(userId).stream()
                 .map(uc -> {
                     Coupon c = normalizeExpire(uc.getCoupon());
                     CouponPolicy p = c.getCouponPolicy();
@@ -50,5 +54,18 @@ public class AdminCouponService {
         }
         return c;
     }
+
+
+    public List<CouponPolicy> getIssuablePolicies(Long userId) {
+        List<Long> issuedPolicyIds =
+                userCouponRepository.findPolicyIdsByUserId(userId);
+
+        return couponPolicyRepository.findAll().stream()
+                .filter(CouponPolicy::getIsActivation)
+                .filter(p -> !issuedPolicyIds.contains(p.getPolicyId()))
+                .toList();
+    }
+
+
 
 }

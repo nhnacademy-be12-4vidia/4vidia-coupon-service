@@ -89,8 +89,8 @@ Content-Type: application/json
 
 
 ### 2-1. 선착순 쿠폰 발급 (재고 있는 정책)
-POST http://localhost:8085/coupons/1/issue
-X-User-Id: 14
+POST http://localhost:8085/coupons/28/issue
+X-User-Id: 306
 Content-Type: application/json
 
 {}
@@ -119,7 +119,7 @@ Content-Type: application/json
 
 ### 3-1. 내가 가진 쿠폰 목록 조회
 GET http://localhost:8085/coupons/me
-X-User-Id: 10
+X-User-Id: 14
 
 ############################################################
 # 4) 주문 페이지용 쿠폰 검증
@@ -157,20 +157,20 @@ POST http://localhost:8085/policies
 Content-Type: application/json
 
 {
-  "policyName": "대예림 쿠폰",
+  "policyName": "카테고리9번대",
   "policyType": "EVENT",
-  "discountType": "PRICE",
-  "discountTargetType": "ALL",
-  "discountValue": 20000,
-  "categoryKdcId": null,
+  "discountType": "RATE",
+  "discountTargetType": "CATEGORY",
+  "discountValue": 10,
+  "categoryKdcId": "910",
   "bookId": null,
   "validityType": "ABSOLUTE",
   "validDays": null,
   "startDate": "2025-12-05T00:00:00",
   "endDate": "2025-12-31T23:59:59",
   "limitedQuantity": 1000,
-  "minOrderAmount": 0,
-  "maxDiscountAmount": 0,
+  "minOrderAmount": 10000,
+  "maxDiscountAmount": 5000,
   "isActivation": true
 }
 
@@ -180,11 +180,11 @@ POST http://localhost:8085/policies
 Content-Type: application/json
 
 {
-"policyName": "8000원 이벤트쿠폰",
+"policyName": "20% 이벤트쿠폰",
 "policyType": "EVENT",
-"discountType": "PRICE",
+"discountType": "RATE",
 "discountTargetType": "ALL",
-"discountValue": 8000,
+"discountValue": 20,
 "categoryKdcId": null,
 "bookId": null,
 "validityType": "ABSOLUTE",
@@ -192,8 +192,8 @@ Content-Type: application/json
 "startDate": "2025-12-05T00:00:00",
 "endDate": "2025-12-31T23:59:59",
 "limitedQuantity": 100,
-"minOrderAmount": 0,
-"maxDiscountAmount": 0,
+"minOrderAmount": 10000,
+"maxDiscountAmount": 10000,
 "isActivation": true
 }
 

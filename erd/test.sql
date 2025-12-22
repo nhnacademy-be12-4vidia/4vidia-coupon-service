@@ -3,6 +3,8 @@ DROP TABLE IF EXISTS coupon;
 DROP TABLE IF EXISTS coupon_policy;
 
 
+SHOW CREATE TABLE user_coupon;
+
 /* ===============================
    1. 쿠폰 정책 테이블
 ================================ */
@@ -57,6 +59,7 @@ CREATE TABLE coupon (
                         CONSTRAINT fk_coupon_policy
                             FOREIGN KEY (coupon_policy_id)
                                 REFERENCES coupon_policy(coupon_policy_id)
+                                ON DELETE CASCADE
 ) ENGINE=InnoDB
   DEFAULT CHARSET=utf8mb4
   COLLATE=utf8mb4_general_ci;
@@ -71,10 +74,17 @@ CREATE TABLE user_coupon (
                              policy_id BIGINT NOT NULL COMMENT '정책ID (중복 발급 방지용)',
 
                              PRIMARY KEY (coupon_id, user_id),
+                             UNIQUE KEY uq_user_policy (policy_id, user_id),
 
                              CONSTRAINT fk_user_coupon_coupon
                                  FOREIGN KEY (coupon_id)
                                      REFERENCES coupon(coupon_id)
+                                     ON DELETE CASCADE,
+
+                             CONSTRAINT fk_user_coupon_policy
+                                 FOREIGN KEY (policy_id)
+                                     REFERENCES coupon_policy(coupon_policy_id)
+                                     ON DELETE CASCADE
 ) ENGINE=InnoDB
   DEFAULT CHARSET=utf8mb4
   COLLATE=utf8mb4_general_ci;
