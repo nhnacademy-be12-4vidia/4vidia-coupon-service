@@ -4,6 +4,7 @@ import com.nhnacademy._vidiacouponservice.config.RabbitMQConfig;
 import com.nhnacademy._vidiacouponservice.domain.dto.CouponIssueMessage;
 import com.nhnacademy._vidiacouponservice.domain.dto.RollbackCouponMessage;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
  * 쿠폰 발급 요청 메시지를 MQ로 보내는 Producer.
  * topic routing key: coupon.issue.requested
  */
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class CouponIssueProducer {
@@ -34,9 +36,7 @@ public class CouponIssueProducer {
     }
 
     public void sendEvent(Long userId, Long policyId, LocalDateTime issuedAt, LocalDateTime expireAt) {
-
         CouponIssueMessage msg = new CouponIssueMessage(userId, policyId, issuedAt, expireAt);
-
         rabbit.convertAndSend(
                 RabbitMQConfig.EXCHANGE,
                 "coupon4.event.requested",

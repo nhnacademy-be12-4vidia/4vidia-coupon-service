@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS user_coupon;
 DROP TABLE IF EXISTS coupon;
 DROP TABLE IF EXISTS coupon_policy;
 
+delete from coupon_policy where coupon_policy_id = 6;
 
 SHOW CREATE TABLE user_coupon;
 

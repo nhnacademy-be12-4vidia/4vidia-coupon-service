@@ -34,7 +34,7 @@ public class AdminCouponController {
         return IssueResultResponse.ok(null);
     }
 
-    @PostMapping("/{userId}/coupons/{policyId}/event-issue")
+    @PostMapping("/{userId}/coupons/{policyId}/issue-event")
     public IssueResultResponse adminEventIssue(
             @PathVariable Long userId,
             @PathVariable Long policyId
