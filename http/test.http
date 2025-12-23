@@ -89,8 +89,8 @@ Content-Type: application/json
 
 
 ### 2-1. 선착순 쿠폰 발급 (재고 있는 정책)
-POST http://localhost:8085/coupons/28/issue
-X-User-Id: 306
+POST http://localhost:8085/coupons/18/issue
+X-User-Id: 13
 Content-Type: application/json
 
 {}
@@ -99,7 +99,7 @@ Content-Type: application/json
 
 ### 2-2. 이벤트 / 웰컴 / 생일 쿠폰 발급 (재고 무제한)
 POST http://localhost:8085/coupons/3/event-issue
-X-User-Id: 10
+X-User-Id: 13
 Content-Type: application/json
 
 {}
@@ -180,20 +180,20 @@ POST http://localhost:8085/policies
 Content-Type: application/json
 
 {
-"policyName": "20% 이벤트쿠폰",
+"policyName": "커피의 정석 쿠폰",
 "policyType": "EVENT",
-"discountType": "RATE",
-"discountTargetType": "ALL",
-"discountValue": 20,
+"discountType": "PRICE",
+"discountTargetType": "BOOK",
+"discountValue": 5000,
 "categoryKdcId": null,
-"bookId": null,
+"bookId": 84787,
 "validityType": "ABSOLUTE",
 "validDays": null,
 "startDate": "2025-12-05T00:00:00",
 "endDate": "2025-12-31T23:59:59",
 "limitedQuantity": 100,
-"minOrderAmount": 10000,
-"maxDiscountAmount": 10000,
+"minOrderAmount": 0,
+"maxDiscountAmount": 0,
 "isActivation": true
 }
 
@@ -214,7 +214,7 @@ Content-Type: application/json
   "validDays": 30,
   "startDate": null,
   "endDate": null,
-  "limitedQuantity": 0,
+  "limitedQuantity": null,
   "minOrderAmount": 0,
   "maxDiscountAmount": 0,
   "isActivation": true

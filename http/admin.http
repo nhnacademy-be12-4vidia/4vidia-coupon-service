@@ -1,0 +1,76 @@
+### 선착순 쿠폰 발급 (재고 있는 정책)
+POST http://localhost:8085/coupons/3/issue
+X-User-Id: 13
+Content-Type: application/json
+
+{}
+
+### 선착순 쿠폰 발급 (재고 있는 정책)
+POST http://localhost:8085/coupons/4/issue
+X-User-Id: 13
+Content-Type: application/json
+
+{}
+
+### 선착순 쿠폰 발급 (재고 있는 정책)
+POST http://localhost:8085/coupons/5/issue
+X-User-Id: 13
+Content-Type: application/json
+
+{}
+
+### 선착순 쿠폰 발급 (재고 있는 정책)
+POST http://localhost:8085/coupons/6/issue
+X-User-Id: 13
+Content-Type: application/json
+
+{}
+
+### 선착순 쿠폰 발급 (재고 있는 정책)
+POST http://localhost:8085/coupons/7/issue
+X-User-Id: 13
+Content-Type: application/json
+
+{}
+
+### 선착순 쿠폰 발급 (재고 있는 정책)
+POST http://localhost:8085/coupons/8/issue
+X-User-Id: 13
+Content-Type: application/json
+
+{}
+
+### 선착순 쿠폰 발급 (재고 있는 정책)
+POST http://localhost:8085/coupons/9/issue
+X-User-Id: 13
+Content-Type: application/json
+
+{}
+
+### 선착순 쿠폰 발급 (재고 있는 정책)
+POST http://localhost:8085/coupons/10/issue
+X-User-Id: 13
+Content-Type: application/json
+
+{}
+
+### 선착순 쿠폰 발급 (재고 있는 정책)
+POST http://localhost:8085/coupons/11/issue
+X-User-Id: 13
+Content-Type: application/json
+
+{}
+
+### 선착순 쿠폰 발급 (재고 있는 정책)
+POST http://localhost:8085/coupons/12/issue
+X-User-Id: 13
+Content-Type: application/json
+
+{}
+
+### 선착순 쿠폰 발급 (재고 있는 정책)
+POST http://localhost:8085/coupons/13/issue
+X-User-Id: 13
+Content-Type: application/json
+
+{}

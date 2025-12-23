@@ -38,4 +38,7 @@ and (:targetType is null or p.discountTargetType = :targetType)
             Pageable pageable
     );
 
+    Optional<CouponPolicy> findByPolicyTypeAndIsActivationTrue(PolicyType policyType);
+
+
 }

@@ -1,0 +1,338 @@
+### 웰컴쿠폰 제작
+
+POST http://localhost:8085/policies
+Content-Type: application/json
+
+{
+  "policyName": "웰컴 쿠폰",
+  "policyType": "WELCOME",
+  "discountType": "PRICE",
+  "discountTargetType": "ALL",
+  "discountValue": 5000,
+  "categoryKdcId": null,
+  "bookId": null,
+  "validityType": "RELATIVE",
+  "validDays": 30,
+  "startDate": null,
+  "endDate": null,
+  "limitedQuantity": null,
+  "minOrderAmount": 0,
+  "maxDiscountAmount": 0,
+  "isActivation": true
+}
+
+### 생일쿠폰 제작
+
+POST http://localhost:8085/policies
+Content-Type: application/json
+
+{
+  "policyName": "2025 생일 쿠폰",
+  "policyType": "BIRTHDAY",
+  "discountType": "RATE",
+  "discountTargetType": "ALL",
+  "discountValue": 20,
+  "categoryKdcId": null,
+  "bookId": null,
+  "validityType": "RELATIVE",
+  "validDays": 30,
+  "startDate": null,
+  "endDate": null,
+  "limitedQuantity": null,
+  "minOrderAmount": 10000,
+  "maxDiscountAmount": 20000,
+  "isActivation": true
+}
+
+
+### 일반적인 쿠폰 제작 price
+
+POST http://localhost:8085/policies
+Content-Type: application/json
+
+{
+  "policyName": "대지강 쿠폰",
+  "policyType": "EVENT",
+  "discountType": "PRICE",
+  "discountTargetType": "ALL",
+  "discountValue": 10000,
+  "categoryKdcId": null,
+  "bookId": null,
+  "validityType": "ABSOLUTE",
+  "validDays": null,
+  "startDate": "2025-12-05T00:00:00",
+  "endDate": "2025-12-31T23:59:59",
+  "limitedQuantity": 1000,
+  "minOrderAmount": 0,
+  "maxDiscountAmount": 0,
+  "isActivation": true
+}
+
+### 일반적인 쿠폰 제작 rate
+POST http://localhost:8085/policies
+Content-Type: application/json
+
+{
+"policyName": "소지강 쿠폰",
+"policyType": "EVENT",
+"discountType": "RATE",
+"discountTargetType": "ALL",
+"discountValue": 10,
+"categoryKdcId": null,
+"bookId": null,
+"validityType": "ABSOLUTE",
+"validDays": null,
+"startDate": "2025-12-05T00:00:00",
+"endDate": "2025-12-31T23:59:59",
+"limitedQuantity": 1000,
+"minOrderAmount": 10000,
+"maxDiscountAmount": 2000,
+"isActivation": true
+}
+
+
+
+### 커피의 정석 쿠폰 제작
+
+POST http://localhost:8085/policies
+Content-Type: application/json
+
+{
+  "policyName": "커피의 정석 쿠폰",
+  "policyType": "EVENT",
+  "discountType": "PRICE",
+  "discountTargetType": "BOOK",
+  "discountValue": 5000,
+  "categoryKdcId": null,
+  "bookId": 84787,
+  "validityType": "ABSOLUTE",
+  "validDays": null,
+  "startDate": "2025-12-05T00:00:00",
+  "endDate": "2025-12-31T23:59:59",
+  "limitedQuantity": 100,
+  "minOrderAmount": 0,
+  "maxDiscountAmount": 0,
+  "isActivation": true
+}
+
+### 카테고리 0번대
+POST http://localhost:8085/policies
+Content-Type: application/json
+
+{
+  "policyName": "카테고리 0번대 쿠폰",
+  "policyType": "EVENT",
+  "discountType": "RATE",
+  "discountTargetType": "CATEGORY",
+  "discountValue": 10,
+  "categoryKdcId": "010",
+  "bookId": null,
+  "validityType": "ABSOLUTE",
+  "validDays": null,
+  "startDate": "2025-12-05T00:00:00",
+  "endDate": "2025-12-31T23:59:59",
+  "limitedQuantity": 1000,
+  "minOrderAmount": 10000,
+  "maxDiscountAmount": 5000,
+  "isActivation": true
+}
+
+### 카테고리 1번대
+POST http://localhost:8085/policies
+Content-Type: application/json
+
+{
+  "policyName": "카테고리 1번대 쿠폰",
+  "policyType": "EVENT",
+  "discountType": "RATE",
+  "discountTargetType": "CATEGORY",
+  "discountValue": 10,
+  "categoryKdcId": "110",
+  "bookId": null,
+  "validityType": "ABSOLUTE",
+  "validDays": null,
+  "startDate": "2025-12-05T00:00:00",
+  "endDate": "2025-12-31T23:59:59",
+  "limitedQuantity": 1000,
+  "minOrderAmount": 10000,
+  "maxDiscountAmount": 5000,
+  "isActivation": true
+}
+
+### 카테고리 2번대
+POST http://localhost:8085/policies
+Content-Type: application/json
+
+{
+  "policyName": "카테고리 2번대 쿠폰",
+  "policyType": "EVENT",
+  "discountType": "RATE",
+  "discountTargetType": "CATEGORY",
+  "discountValue": 10,
+  "categoryKdcId": "210",
+  "bookId": null,
+  "validityType": "ABSOLUTE",
+  "validDays": null,
+  "startDate": "2025-12-05T00:00:00",
+  "endDate": "2025-12-31T23:59:59",
+  "limitedQuantity": 1000,
+  "minOrderAmount": 10000,
+  "maxDiscountAmount": 5000,
+  "isActivation": true
+}
+
+### 카테고리 3번대
+POST http://localhost:8085/policies
+Content-Type: application/json
+
+{
+  "policyName": "카테고리 3번대 쿠폰",
+  "policyType": "EVENT",
+  "discountType": "RATE",
+  "discountTargetType": "CATEGORY",
+  "discountValue": 10,
+  "categoryKdcId": "310",
+  "bookId": null,
+  "validityType": "ABSOLUTE",
+  "validDays": null,
+  "startDate": "2025-12-05T00:00:00",
+  "endDate": "2025-12-31T23:59:59",
+  "limitedQuantity": 1000,
+  "minOrderAmount": 10000,
+  "maxDiscountAmount": 5000,
+  "isActivation": true
+}
+
+### 카테고리 4번대
+POST http://localhost:8085/policies
+Content-Type: application/json
+
+{
+  "policyName": "카테고리 4번대 쿠폰",
+  "policyType": "EVENT",
+  "discountType": "RATE",
+  "discountTargetType": "CATEGORY",
+  "discountValue": 10,
+  "categoryKdcId": "410",
+  "bookId": null,
+  "validityType": "ABSOLUTE",
+  "validDays": null,
+  "startDate": "2025-12-05T00:00:00",
+  "endDate": "2025-12-31T23:59:59",
+  "limitedQuantity": 1000,
+  "minOrderAmount": 10000,
+  "maxDiscountAmount": 5000,
+  "isActivation": true
+}
+
+### 카테고리 5번대
+POST http://localhost:8085/policies
+Content-Type: application/json
+
+{
+  "policyName": "카테고리 5번대 쿠폰",
+  "policyType": "EVENT",
+  "discountType": "RATE",
+  "discountTargetType": "CATEGORY",
+  "discountValue": 10,
+  "categoryKdcId": "510",
+  "bookId": null,
+  "validityType": "ABSOLUTE",
+  "validDays": null,
+  "startDate": "2025-12-05T00:00:00",
+  "endDate": "2025-12-31T23:59:59",
+  "limitedQuantity": 1000,
+  "minOrderAmount": 10000,
+  "maxDiscountAmount": 5000,
+  "isActivation": true
+}
+
+### 카테고리 6번대
+POST http://localhost:8085/policies
+Content-Type: application/json
+
+{
+  "policyName": "카테고리 6번대 쿠폰",
+  "policyType": "EVENT",
+  "discountType": "RATE",
+  "discountTargetType": "CATEGORY",
+  "discountValue": 10,
+  "categoryKdcId": "610",
+  "bookId": null,
+  "validityType": "ABSOLUTE",
+  "validDays": null,
+  "startDate": "2025-12-05T00:00:00",
+  "endDate": "2025-12-31T23:59:59",
+  "limitedQuantity": 1000,
+  "minOrderAmount": 10000,
+  "maxDiscountAmount": 5000,
+  "isActivation": true
+}
+
+### 카테고리 7번대
+POST http://localhost:8085/policies
+Content-Type: application/json
+
+{
+  "policyName": "카테고리 7번대 쿠폰",
+  "policyType": "EVENT",
+  "discountType": "RATE",
+  "discountTargetType": "CATEGORY",
+  "discountValue": 10,
+  "categoryKdcId": "710",
+  "bookId": null,
+  "validityType": "ABSOLUTE",
+  "validDays": null,
+  "startDate": "2025-12-05T00:00:00",
+  "endDate": "2025-12-31T23:59:59",
+  "limitedQuantity": 1000,
+  "minOrderAmount": 10000,
+  "maxDiscountAmount": 5000,
+  "isActivation": true
+}
+
+### 카테고리 8번대
+POST http://localhost:8085/policies
+Content-Type: application/json
+
+{
+  "policyName": "카테고리 8번대 쿠폰",
+  "policyType": "EVENT",
+  "discountType": "RATE",
+  "discountTargetType": "CATEGORY",
+  "discountValue": 10,
+  "categoryKdcId": "810",
+  "bookId": null,
+  "validityType": "ABSOLUTE",
+  "validDays": null,
+  "startDate": "2025-12-05T00:00:00",
+  "endDate": "2025-12-31T23:59:59",
+  "limitedQuantity": 1000,
+  "minOrderAmount": 10000,
+  "maxDiscountAmount": 5000,
+  "isActivation": true
+}
+
+### 카테고리 9번대
+POST http://localhost:8085/policies
+Content-Type: application/json
+
+{
+  "policyName": "카테고리 9번대 쿠폰",
+  "policyType": "EVENT",
+  "discountType": "RATE",
+  "discountTargetType": "CATEGORY",
+  "discountValue": 10,
+  "categoryKdcId": "910",
+  "bookId": null,
+  "validityType": "ABSOLUTE",
+  "validDays": null,
+  "startDate": "2025-12-05T00:00:00",
+  "endDate": "2025-12-31T23:59:59",
+  "limitedQuantity": 1000,
+  "minOrderAmount": 10000,
+  "maxDiscountAmount": 5000,
+  "isActivation": true
+}
+
+

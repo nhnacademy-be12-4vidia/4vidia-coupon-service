@@ -2,9 +2,6 @@ DROP TABLE IF EXISTS user_coupon;
 DROP TABLE IF EXISTS coupon;
 DROP TABLE IF EXISTS coupon_policy;
 
-delete from coupon_policy where coupon_policy_id = 6;
-
-SHOW CREATE TABLE user_coupon;
 
 /* ===============================
    1. 쿠폰 정책 테이블
@@ -24,8 +21,8 @@ CREATE TABLE coupon_policy (
                                validity_type        TINYINT      NOT NULL COMMENT '유효기간 타입 (0=RELATIVE,1=ABSOLUTE)',
                                valid_days           INT          NULL COMMENT '상대유효기간(일)',
 
-                               start_date           DATE     NULL COMMENT '절대유효 시작일',
-                               end_date             DATE     NULL COMMENT '절대유효 종료일',
+                               start_date           DATE         NULL COMMENT '절대유효 시작일',
+                               end_date             DATE         NULL COMMENT '절대유효 종료일',
 
                                limited_quantity     INT          NULL COMMENT '한정수량 (NULL이면 무제한)',
                                issued_quantity      INT          NOT NULL DEFAULT 0 COMMENT '발급된 수량',
@@ -35,10 +32,25 @@ CREATE TABLE coupon_policy (
 
                                is_activation        TINYINT      NOT NULL DEFAULT 1 COMMENT '활성화 여부',
 
-                               PRIMARY KEY (coupon_policy_id)
+    /* 🔥 단일 활성 정책 강제용 (WELCOME, BIRTHDAY) */
+                               single_active_policy_type TINYINT
+                                   GENERATED ALWAYS AS (
+                                       CASE
+                                           WHEN is_activation = 1 AND policy_type IN (0, 1)
+                                               THEN policy_type
+                                           ELSE NULL
+                                           END
+                                       ) STORED,
+
+                               PRIMARY KEY (coupon_policy_id),
+
+    /* 🔐 단일 활성 정책 UNIQUE */
+                               UNIQUE KEY ux_single_active_policy_type (single_active_policy_type)
+
 ) ENGINE=InnoDB
   DEFAULT CHARSET=utf8mb4
   COLLATE=utf8mb4_general_ci;
+
 
 
 /* ===============================
@@ -65,7 +77,6 @@ CREATE TABLE coupon (
   DEFAULT CHARSET=utf8mb4
   COLLATE=utf8mb4_general_ci;
 
-
 /* ===============================
    3. 유저 보유 쿠폰 테이블
 ================================ */
@@ -75,6 +86,8 @@ CREATE TABLE user_coupon (
                              policy_id BIGINT NOT NULL COMMENT '정책ID (중복 발급 방지용)',
 
                              PRIMARY KEY (coupon_id, user_id),
+
+    /* 🔒 유저 + 정책 중복 발급 방지 */
                              UNIQUE KEY uq_user_policy (policy_id, user_id),
 
                              CONSTRAINT fk_user_coupon_coupon
