@@ -6,6 +6,7 @@ import com.nhnacademy._vidiacouponservice.domain.common.DiscountTargetType;
 import com.nhnacademy._vidiacouponservice.domain.dto.request.CouponPolicyCreateRequest;
 import com.nhnacademy._vidiacouponservice.domain.dto.response.CouponPolicyResponse;
 import com.nhnacademy._vidiacouponservice.domain.dto.response.PageResponse;
+import com.nhnacademy._vidiacouponservice.domain.dto.response.WelcomeCouponPolicy;
 import com.nhnacademy._vidiacouponservice.service.CouponPolicyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -35,6 +36,12 @@ public class CouponPolicyController {
     @GetMapping("/{policyId}")
     public CouponPolicy find(@PathVariable Long policyId) {
         return policyService.find(policyId);
+    }
+
+    @GetMapping("/welcome")
+    public WelcomeCouponPolicy getWelcomeCouponPolicy() {
+        CouponPolicy couponPolicy = policyService.find(1L);
+        return new WelcomeCouponPolicy(couponPolicy.getDiscountValue());
     }
 
     @PatchMapping("/{policyId}/toggle")
