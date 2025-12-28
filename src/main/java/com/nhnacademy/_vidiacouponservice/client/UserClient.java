@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 @FeignClient(name = "4vidia-bookstore-service")
 public interface UserClient {
 
-    @GetMapping("/users/{userId}/exists")
+    @GetMapping("/internal/users/{userId}/exists")
     void validateUser(@PathVariable Long userId);
 }
