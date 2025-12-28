@@ -16,21 +16,19 @@ public class CouponIssueController {
 
     // 선착순 발급 (재고 있음)
     @PostMapping("/{policyId}/issue")
-    public IssueResultResponse issue(
+    public void issue(
             @PathVariable Long policyId,
             @RequestHeader("X-User-Id") Long userId
     ) {
         issueService.issue(userId, policyId);
-        return IssueResultResponse.ok(null);
     }
 
     // 이벤트 / 웰컴 / 생일 (재고 없음)
     @PostMapping("/{policyId}/event-issue")
-    public IssueResultResponse issueEvent(
+    public void issueEvent(
             @PathVariable Long policyId,
             @RequestHeader("X-User-Id") Long userId
     ) {
         eventIssueService.issueEventCoupon(userId, policyId);
-        return IssueResultResponse.ok(null);
     }
 }

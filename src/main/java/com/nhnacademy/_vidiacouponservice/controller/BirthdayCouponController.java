@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/policies")
+@RequestMapping("/internal/policies")
 public class BirthdayCouponController {
     private final BirthdayCouponService birthdayCouponService;
 

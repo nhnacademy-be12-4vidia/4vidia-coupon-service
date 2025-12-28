@@ -26,21 +26,19 @@ public class AdminCouponController {
     }
 
     @PostMapping("/{userId}/coupons/{policyId}/issue")
-    public IssueResultResponse adminIssue(
+    public void adminIssue(
             @PathVariable Long userId,
             @PathVariable Long policyId
     ) {
         issueService.issue(userId, policyId);
-        return IssueResultResponse.ok(null);
     }
 
     @PostMapping("/{userId}/coupons/{policyId}/issue-event")
-    public IssueResultResponse adminEventIssue(
+    public void adminEventIssue(
             @PathVariable Long userId,
             @PathVariable Long policyId
     ) {
         eventIssueService.issueEventCoupon(userId, policyId);
-        return IssueResultResponse.ok(null);
     }
 
     @GetMapping("/{userId}/coupons/issuable-policies")

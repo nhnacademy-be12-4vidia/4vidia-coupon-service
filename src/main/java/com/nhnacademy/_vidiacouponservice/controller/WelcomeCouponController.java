@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/coupons/welcome")
+@RequestMapping("/internal/coupons/welcome")
 public class WelcomeCouponController {
 
     private final WelcomeCouponService welcomeCouponService;
