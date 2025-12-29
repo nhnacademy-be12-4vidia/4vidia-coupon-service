@@ -1,7 +1,6 @@
 package com.nhnacademy._vidiacouponservice.controller;
 
 import com.nhnacademy._vidiacouponservice.domain.dto.response.CouponPolicyResponse;
-import com.nhnacademy._vidiacouponservice.domain.dto.response.IssueResultResponse;
 import com.nhnacademy._vidiacouponservice.domain.dto.response.MyCouponResponse;
 import com.nhnacademy._vidiacouponservice.service.AdminCouponService;
 import com.nhnacademy._vidiacouponservice.service.CouponEventIssueService;

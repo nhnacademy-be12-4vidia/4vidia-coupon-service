@@ -1,6 +1,5 @@
 package com.nhnacademy._vidiacouponservice.controller;
 
-import com.nhnacademy._vidiacouponservice.domain.dto.response.IssueResultResponse;
 import com.nhnacademy._vidiacouponservice.service.CouponEventIssueService;
 import com.nhnacademy._vidiacouponservice.service.CouponIssueService;
 import lombok.RequiredArgsConstructor;

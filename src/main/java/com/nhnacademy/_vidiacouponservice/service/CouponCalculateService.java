@@ -68,7 +68,9 @@ public class CouponCalculateService {
         }
 
         // 8. 할인 계산
-        int discountPrice = calculateDiscount(totalOriginalPrice, policy);
+        int targetAmount = calculateTargetAmount(policy, req);
+
+        int discountPrice = calculateDiscount(targetAmount, policy);
         return new CouponCalculationResponse(discountPrice);
     }
 
@@ -118,16 +120,55 @@ public class CouponCalculateService {
         }
     }
 
-    private int calculateDiscount(int total, CouponPolicy policy) {
-        if (policy.getDiscountType() == DiscountType.PRICE) {
-            return policy.getDiscountValue();
+    private int calculateTargetAmount(
+            CouponPolicy policy,
+            CouponCalculationRequest req
+    ) {
+        return switch (policy.getDiscountTargetType()) {
+
+            case ALL -> req.items().stream()
+                    .mapToInt(i -> i.price() * i.quantity())
+                    .sum();
+
+            case CATEGORY -> {
+                String required = KdcCategory
+                        .fromKdcId(policy.getCategoryKdcId())
+                        .getCode();
+
+                yield req.items().stream()
+                        .filter(i ->
+                                KdcCategory.fromKdcId(i.categoryKdcId())
+                                        .getCode()
+                                        .equals(required)
+                        )
+                        .mapToInt(i -> i.price() * i.quantity())
+                        .sum();
+            }
+
+            case BOOK -> req.items().stream()
+                    .filter(i -> i.bookId().equals(policy.getBookId()))
+                    .mapToInt(i -> i.price() * i.quantity())
+                    .sum();
+        };
+    }
+
+
+    private int calculateDiscount(int targetAmount, CouponPolicy policy) {
+        if (targetAmount <= 0) {
+            return 0;
         }
 
-        int discount = total * policy.getDiscountValue() / 100;
+        if (policy.getDiscountType() == DiscountType.PRICE) {
+            return Math.min(policy.getDiscountValue(), targetAmount);
+        }
 
-        if (policy.getMaxDiscountAmount() != null)
+        int discount = targetAmount * policy.getDiscountValue() / 100;
+
+        if (policy.getMaxDiscountAmount() != null) {
             discount = Math.min(discount, policy.getMaxDiscountAmount());
+        }
 
         return discount;
     }
+
 }

@@ -3,6 +3,10 @@ DROP TABLE IF EXISTS coupon;
 DROP TABLE IF EXISTS coupon_policy;
 
 
+SELECT * FROM book WHERE book_id = 158652;
+SELECT * FROM category WHERE category_id = 1001;
+
+
 /* ===============================
    1. 쿠폰 정책 테이블
 ================================ */

@@ -2,7 +2,6 @@ package com.nhnacademy._vidiacouponservice.producer;
 
 import com.nhnacademy._vidiacouponservice.config.RabbitMQConfig;
 import com.nhnacademy._vidiacouponservice.domain.dto.CouponIssueMessage;
-import com.nhnacademy._vidiacouponservice.domain.dto.RollbackCouponMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
