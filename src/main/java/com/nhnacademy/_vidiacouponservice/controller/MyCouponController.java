@@ -3,10 +3,14 @@ package com.nhnacademy._vidiacouponservice.controller;
 import com.nhnacademy._vidiacouponservice.domain.dto.request.CouponValidateRequest;
 import com.nhnacademy._vidiacouponservice.domain.dto.request.OrderCouponRequest;
 import com.nhnacademy._vidiacouponservice.domain.dto.request.OrderCouponResult;
+import com.nhnacademy._vidiacouponservice.domain.dto.response.MyCouponPageResponse;
 import com.nhnacademy._vidiacouponservice.domain.dto.response.MyCouponResponse;
 import com.nhnacademy._vidiacouponservice.domain.dto.response.OrderPageCouponResponse;
 import com.nhnacademy._vidiacouponservice.service.MyCouponService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,10 +26,19 @@ public class MyCouponController {
 
     // 내 쿠폰 목록
     @GetMapping("/me")
-    public List<MyCouponResponse> getMyCoupons(
-            @RequestHeader("X-User-Id") Long userId
+    public MyCouponPageResponse getMyCoupons(
+            @RequestHeader("X-User-Id") Long userId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "ALL") String status
     ) {
-        return myCouponService.getMyCoupons(userId);
+        Pageable pageable = PageRequest.of(
+                page,
+                size,
+                Sort.by(Sort.Direction.DESC, "id.couponId") // 발급 최신순 비슷하게
+        );
+
+        return myCouponService.getMyCouponsPage(userId, status, pageable);
     }
 
     // 주문 화면 쿠폰 검증 리스트

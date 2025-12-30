@@ -9,11 +9,11 @@ import com.nhnacademy._vidiacouponservice.domain.common.KdcCategory;
 import com.nhnacademy._vidiacouponservice.domain.dto.request.CouponValidateItem;
 import com.nhnacademy._vidiacouponservice.domain.dto.request.CouponValidateRequest;
 import com.nhnacademy._vidiacouponservice.domain.dto.request.OrderCouponRequest;
-import com.nhnacademy._vidiacouponservice.domain.dto.response.MyCouponResponse;
-import com.nhnacademy._vidiacouponservice.domain.dto.response.OrderBookResponse;
-import com.nhnacademy._vidiacouponservice.domain.dto.response.OrderPageCouponResponse;
+import com.nhnacademy._vidiacouponservice.domain.dto.response.*;
 import com.nhnacademy._vidiacouponservice.repository.UserCouponRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -25,29 +25,48 @@ public class MyCouponService {
 
     private final UserCouponRepository userCouponRepo;
 
-    public List<MyCouponResponse> getMyCoupons(Long userId) {
-        return userCouponRepo.findAllByIdUserId(userId).stream()
-                .map(uc -> {
-                    Coupon c = uc.getCoupon();
-                    CouponPolicy p = c.getCouponPolicy();
+    public MyCouponPageResponse getMyCouponsPage(Long userId, String status, Pageable pageable) {
 
-                    return new MyCouponResponse(
-                            c.getCouponId(),
-                            p.getPolicyName(),
-                            p.getDiscountType().name(),
-                            p.getDiscountValue(),
-                            p.getMaxDiscountAmount(),
-                            p.getDiscountTargetType().name(),
-                            p.getCategoryKdcId(),
-                            p.getBookId(),
-                            c.getIssuedAt(),
-                            c.getExpireAt(),
-                            c.getStatus(),
-                            c.getUserOrderId()
-                    );
-                })
-                .toList();
+        Page<UserCoupon> page =
+                (status == null || status.equals("ALL"))
+                        ? userCouponRepo.findAllByIdUserId(userId, pageable)
+                        : userCouponRepo.findAllByIdUserIdAndCoupon_Status(userId, CouponStatus.valueOf(status), pageable);
+
+        Page<MyCouponResponse> mapped = page.map(uc -> {
+            Coupon c = normalizeExpire(uc.getCoupon());
+            CouponPolicy p = c.getCouponPolicy();
+
+            return new MyCouponResponse(
+                    c.getCouponId(),
+                    p.getPolicyName(),
+                    p.getDiscountType().name(),
+                    p.getDiscountValue(),
+                    p.getMaxDiscountAmount(),
+                    p.getDiscountTargetType().name(),
+                    p.getCategoryKdcId(),
+                    p.getBookId(),
+                    c.getIssuedAt(),
+                    c.getExpireAt(),
+                    c.getStatus(),
+                    c.getUserOrderId()
+            );
+        });
+
+        long totalCount = userCouponRepo.countByIdUserIdAndCoupon_Status(userId, CouponStatus.UNUSED);
+
+        long expireSoonCount = userCouponRepo.countByIdUserIdAndCoupon_StatusAndCoupon_ExpireAtBefore(
+                userId,
+                CouponStatus.UNUSED,
+                LocalDateTime.now().plusDays(7)
+        );
+
+        return new MyCouponPageResponse(
+                PageResponse.from(mapped),
+                totalCount,
+                expireSoonCount
+        );
     }
+
 
     // 주문 DTO → 쿠폰 검증 DTO 변환 (새로 추가된 핵심)
     public List<OrderPageCouponResponse> getOrderCoupons(Long userId, OrderCouponRequest req) {

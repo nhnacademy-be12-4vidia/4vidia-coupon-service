@@ -16,21 +16,18 @@ public interface CouponPolicyRepository extends JpaRepository<CouponPolicy, Long
     // 활성 정책만 조회
     List<CouponPolicy> findAllByIsActivationTrue();
 
-    // 특정 타입의 정책 조회 (EX: WELCOME, BIRTHDAY)
-    List<CouponPolicy> findAllByPolicyType(PolicyType type);
-
     Optional<CouponPolicy> findByPolicyType(PolicyType type);
 
     @Query("""
-select p from CouponPolicy p
-where (:keyword is null or p.policyName like %:keyword%)
-and (
-    :status is null
-    or (:status = 'ACTIVE' and p.isActivation = true)
-    or (:status = 'INACTIVE' and p.isActivation = false)
-)
-and (:targetType is null or p.discountTargetType = :targetType)
-""")
+    select p from CouponPolicy p
+    where (:keyword is null or p.policyName like %:keyword%)
+    and (
+        :status is null
+        or (:status = 'ACTIVE' and p.isActivation = true)
+        or (:status = 'INACTIVE' and p.isActivation = false)
+    )
+    and (:targetType is null or p.discountTargetType = :targetType)
+    """)
     Page<CouponPolicy> search(
             String keyword,
             String status,
