@@ -61,3 +61,10 @@ jobs:
             echo "Starting 4vidia-coupon-service-1"
             docker compose pull 4vidia-coupon-service-1
             docker compose up -d 4vidia-coupon-service-1
+            
+            
+            echo "Starting 4vidia-coupon-service-2"
+            docker compose pull 4vidia-coupon-service-2
+            docker compose up -d 4vidia-coupon-service-2
+            
+  
