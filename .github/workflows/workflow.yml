@@ -58,12 +58,12 @@ jobs:
 
             # 1번 2번 이미지 가져오기
             echo "Pulling latest image for 4vidia-coupon-service-1..."
-            docker compose pull 4vidia-coupon-service-1 4vidia-coupon-service--2
+            docker compose pull 4vidia-coupon-service-1 4vidia-coupon-service-2
 
             # 1번 서버 OUT_OF_SERVICE으로 바꿔서 접근 못하게 하고 시간 기다린후 죽음
-            echo "Setting 4vidia-coupon-service--1 DOWN in Eureka..."
+            echo "Setting 4vidia-coupon-service-1 DOWN in Eureka..."
             curl -X PUT \
-              "http://${ADMIN_ID}:${ADMIN_PASSWORD}@localhost:10465/eureka/v2/apps/4VIDIA-COUPON-SERVICE/4vidia-coupon-service--1/status?value=OUT_OF_SERVICE" || true
+              "http://${ADMIN_ID}:${ADMIN_PASSWORD}@localhost:10465/eureka/v2/apps/4VIDIA-COUPON-SERVICE/4vidia-coupon-service-1/status?value=OUT_OF_SERVICE" || true
             sleep 30 # 게이트웨이가 명단 갱신할 시간 벌어주기
 
             # 1번 서버 다시 배포하기
