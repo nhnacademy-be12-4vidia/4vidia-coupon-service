@@ -13,7 +13,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin/users")
-public class AdminCouponController {
+public class AdminCouponController{
 
 
     private final AdminCouponService adminCouponService;

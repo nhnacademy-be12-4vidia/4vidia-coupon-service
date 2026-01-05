@@ -1,5 +1,6 @@
 package com.nhnacademy._vidiacouponservice.controller;
 
+import com.nhnacademy._vidiacouponservice.docs.RestDocsSupport;
 import com.nhnacademy._vidiacouponservice.domain.CouponPolicy;
 import com.nhnacademy._vidiacouponservice.service.CouponPolicyService;
 import org.junit.jupiter.api.DisplayName;
@@ -17,19 +18,33 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.BDDMockito.given;
 
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 @WebMvcTest(CouponPolicyController.class)
-class CouponPolicyControllerTest {
+class CouponPolicyControllerTest extends RestDocsSupport {
 
     @Autowired
     MockMvc mockMvc;
 
     @MockBean
     CouponPolicyService couponPolicyService;
+
+
+    @Autowired
+    CouponPolicyController couponPolicyController;
+
+    @Override
+    protected Object initController() {
+        return couponPolicyController;
+    }
 
     @Test
     @DisplayName("활성화된 쿠폰 정책 전체 조회")
@@ -38,7 +53,22 @@ class CouponPolicyControllerTest {
                 .willReturn(List.of());
 
         mockMvc.perform(get("/policies"))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andDo(document("coupon-policies-search",
+                        queryParameters(
+                                parameterWithName("page").description("페이지 번호").optional(),
+                                parameterWithName("size").description("페이지 크기").optional()
+                        ),
+                        responseFields(
+                                fieldWithPath("header.isSuccessful").description("성공 여부"),
+                                fieldWithPath("header.resultCode").description("결과 코드"),
+                                fieldWithPath("header.resultMessage").description("결과 메시지"),
+                                fieldWithPath("header.errorCode").description("에러 코드"),
+                                fieldWithPath("header.timestamp").description("응답 시간"),
+                                fieldWithPath("data").description("검색 결과 페이지")
+                        )
+                ));
+
     }
 
     @Test

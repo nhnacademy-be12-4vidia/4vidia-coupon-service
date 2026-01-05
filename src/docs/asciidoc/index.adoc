@@ -1,0 +1,33 @@
+= Coupon Service API Docs
+:toc: left
+:toclevels: 2
+:sectnums:
+:source-highlighter: highlightjs
+
+== My Coupon API
+
+=== 내 쿠폰 조회
+include::{snippets}/my-coupons-get/http-request.adoc[]
+include::{snippets}/my-coupons-get/request-headers.adoc[]
+include::{snippets}/my-coupons-get/query-parameters.adoc[]
+include::{snippets}/my-coupons-get/response-fields.adoc[]
+include::{snippets}/my-coupons-get/http-response.adoc[]
+
+=== 주문 쿠폰 검증
+include::{snippets}/coupons-validate/http-request.adoc[]
+include::{snippets}/coupons-validate/request-headers.adoc[]
+include::{snippets}/coupons-validate/http-response.adoc[]
+
+== Coupon Policy API
+
+=== 활성 쿠폰 정책 조회
+include::{snippets}/coupon-policies-get/http-request.adoc[]
+include::{snippets}/coupon-policies-get/http-response.adoc[]
+
+== Admin Coupon API
+
+=== 특정 유저 쿠폰 조회
+include::{snippets}/admin-user-coupons-get/http-request.adoc[]
+include::{snippets}/admin-user-coupons-get/path-parameters.adoc[]
+include::{snippets}/admin-user-coupons-get/response-fields.adoc[]
+include::{snippets}/admin-user-coupons-get/http-response.adoc[]

@@ -1,5 +1,6 @@
 package com.nhnacademy._vidiacouponservice.controller;
 
+import com.nhnacademy._vidiacouponservice.docs.RestDocsSupport;
 import com.nhnacademy._vidiacouponservice.service.AdminCouponService;
 import com.nhnacademy._vidiacouponservice.service.CouponEventIssueService;
 import com.nhnacademy._vidiacouponservice.service.CouponIssueService;
@@ -14,6 +15,11 @@ import java.util.List;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -21,10 +27,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @WebMvcTest(AdminCouponController.class)
-class AdminCouponControllerTest {
+class AdminCouponControllerTest extends RestDocsSupport {
 
     @Autowired
     MockMvc mockMvc;
+
+    @Autowired
+    AdminCouponController adminCouponController;
 
     @MockBean
     AdminCouponService adminCouponService;
@@ -33,6 +42,11 @@ class AdminCouponControllerTest {
     @MockBean
     CouponEventIssueService couponEventIssueService;
 
+    @Override
+    protected Object initController() {
+        return adminCouponController;
+    }
+
     @Test
     @DisplayName("관리자 - 특정 유저의 쿠폰 목록 조회")
     void getUserCoupons_success() throws Exception {
@@ -40,14 +54,34 @@ class AdminCouponControllerTest {
                 .willReturn(List.of());
 
         mockMvc.perform(get("/admin/users/{userId}/coupons", 1L))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andDo(document("admin-user-coupons-get",
+                        pathParameters(
+                                parameterWithName("userId").description("유저 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("header.isSuccessful").description("성공 여부"),
+                                fieldWithPath("header.resultCode").description("결과 코드"),
+                                fieldWithPath("header.resultMessage").description("결과 메시지"),
+                                fieldWithPath("header.errorCode").description("에러 코드"),
+                                fieldWithPath("header.timestamp").description("응답 시간"),
+                                fieldWithPath("data").description("유저의 쿠폰 목록")
+                        )
+                ));
+
     }
 
     @Test
     @DisplayName("관리자 - 쿠폰 정책 기반 쿠폰 발급")
     void adminIssue_success() throws Exception {
         mockMvc.perform(post("/admin/users/{userId}/coupons/{policyId}/issue", 1L, 10L))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andDo(document("admin-coupon-issue",
+                        pathParameters(
+                                parameterWithName("userId").description("유저 ID"),
+                                parameterWithName("policyId").description("쿠폰 정책 ID")
+                        )
+                ));
 
         verify(couponIssueService).issue(1L, 10L);
     }
