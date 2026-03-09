@@ -13,6 +13,7 @@ import java.util.List;
 @RequestMapping("/categories")
 public class CategoryController {
 
+
     @GetMapping
     public List<KdcCategoryResponse> getCategories() {
         return Arrays.stream(KdcCategory.values())
